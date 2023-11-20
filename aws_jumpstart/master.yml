@@ -6,13 +6,18 @@ Parameters:
 
   EndpointLambdaCodeS3Key:
     Type: String
-    Default: "lambdas/api_endpoint_lambda/endpoint_lambda_code.py"
+    Default: "lambdas/api_endpoint_lambda/endpoint_lambda_code.zip"
     Description: S3 Key for the Lambda code ZIP file
   
   S3BriaBucket: 
     Type: String
     Default: "jumpstart-bria-agent-results"
     Description: Name of the BRIA bucket
+
+  S3EmbeddingsPath: 
+    Type: String
+    Default: "embeddings/"
+    Description: S3 Embeddings path
 
   SageMakerImage:
     Type: String
@@ -64,4 +69,5 @@ Resources:
         EndpointLambdaCodeS3Key: !Ref EndpointLambdaCodeS3Key
         PutObjectTriggerClipLambda: !Ref PutObjectTriggerClipLambda
         BucketName: !Ref S3BriaBucket
+        S3EmbeddingsPath: !Ref S3EmbeddingsPath
         MainRole:  !GetAtt IAMRoleStack.Outputs.IAMRoleARN

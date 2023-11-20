@@ -9,6 +9,8 @@ Parameters:
     Type: String
   MainRole:
     Type: String
+  S3EmbeddingsPath:
+    Type: String
 
 AWSTemplateFormatVersion: '2010-09-09'
 Resources:
@@ -24,6 +26,8 @@ Resources:
       Environment:
         Variables:
           endpoint: arn:aws:sagemaker:us-east-1:542375318953:endpoint/triton-gaia-ep-2023-11-20-11-04-54
+          s3_bucket: BucketName
+          s3_path: S3EmbeddingsPath
           # Define any environment variables your Lambda needs
 
   # LambdaExecutionRole:
@@ -51,7 +55,6 @@ Resources:
       ResourceId: !Ref ApiGatewayResource
       RestApiId: !Ref ApiGatewayRestApi
       AuthorizationType: NONE  # or your chosen authorization
-      Role: !Ref MainRole
       Integration:
         IntegrationHttpMethod: POST  # or GET
         Type: AWS_PROXY
@@ -65,5 +68,4 @@ Resources:
       Action: lambda:InvokeFunction
       FunctionName: !Ref LambdaFunction
       Principal: apigateway.amazonaws.com
-      Role: !Ref MainRole
       SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}/*/*/path
