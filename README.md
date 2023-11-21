@@ -5,16 +5,42 @@ To utilize Bria foundation models, it is necessary to collect all generations ma
 # Overview
 
 ### Self Hosted Inferance
-...
+WIP...
 
 ### AWS Jump Start getting started
-Deploy Bria model through AWS marketplace (Jumpstart) is possible in 2 ways:
+1. Get and deploy one of our models from - https://aws.amazon.com/marketplace/seller-profile?id=seller-ilfk2fw5juhfi
+2. Fill in the config file
+3. run the file "agent/aws_jumpstart/run.sh"
+4. You now have a lambda deployed on your account and you can start sending requests
+```python
+import boto3
 
-1. Integrate directly from AWS marketplace, this will create an endpoint  to use but all generations will not be fully commercial use due to the fact that attribution metadata (embedding) was not shared with Bria 
-2. Deploy with Bria cloud formation stack - Here you will get a similar stack to the standard agent above, the only difference will be that jump-start inference endpoint will be used VS none managed inference service
+# Set up the AWS Lambda client
+lambda_client = boto3.client('lambda', region_name='your_region')
 
-After deployed clients can send requests to a single endpoint and utilize Bria model
+# Specify the Lambda function name
+function_name = 'your_lambda_function_name'
 
+# Input payload for the Lambda function (if needed)
+payload = {
+    "prompt": "A towering redwood tree in a forest, during twilight",
+    "width": 512,
+    "height": 512,
+    "steps": 50,
+    "seed": 42,
+    "negative_prompt": "blue sky, people",
+}
+
+# Make the request to the Lambda function
+response = lambda_client.invoke(
+    FunctionName=function_name,
+    InvocationType='RequestResponse',
+    Payload=json.dumps(payload),
+)
+
+response_payload = json.load(response['Payload'])
+print(response_payload)
+```
 
 # FAQ
 ### Do I have to install the Attribution Agent?
