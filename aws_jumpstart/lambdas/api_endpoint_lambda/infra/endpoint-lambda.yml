@@ -3,10 +3,6 @@ Parameters:
     Type: String
   CodeS3Bucket:
     Type: String
-  EndpointLambdaCodeS3Key:
-    Type: String
-  PutObjectTriggerClipLambda:
-    Type: String
   MainRole:
     Type: String
   S3EmbeddingsPath:

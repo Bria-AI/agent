@@ -1,8 +1,0 @@
-Parameters:
-  S3BriaBucket:
-    Type: String
-Resources:
-  MyS3Bucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: !Ref S3BriaBucket
