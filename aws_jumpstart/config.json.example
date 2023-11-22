@@ -1,0 +1,6 @@
+[
+    {
+        "ParameterKey": "S3BriaBucket",
+        "ParameterValue": "jumpstart-bria-test-results"
+    }
+]

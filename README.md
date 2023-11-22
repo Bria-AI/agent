@@ -1,20 +1,58 @@
 # Bria Attribution Agent
-Bria attribution engine supports the data partner's revenue share model as part of Bria.ai Generative platform.
+![alt text](./assets/architecture.jpeg)
+
+Bria attribution agent supports the data partner's revenue share model as part of Bria.ai Generative platform.
 To utilize Bria foundation models, it is necessary to collect all generations made by them. When running on the Bria inference service, this logic is taken care of for you. However, if the inference is managed by a third party outside of Bria, you will need to install this Agent. For that, we provide the infrastructure as code for cloud deployment.
 
-# Overview
+# Deploy
 
-### Self Hosted Inferance
+### Self Hosted Inference
+WIP...
+
+### AWS Jump Start
+1. Deploy one of our [models](https://aws.amazon.com/marketplace/seller-profile?id=seller-ilfk2fw5juhfi) on as sagemaker endpoint
+3. Run the file "agent/aws_jumpstart/init.sh", this will run cloudformation stack to create IAM user 
+4. Send an email to support@bria.ai with your IAM user
+```Plain
+Title - New agent registration for <name>
+Subject - IAM, <xxx>
+```
+5. After you get responce from us, fill in the config file
+```YML
+SG_ENDPOINT_ARN="..."
 ...
+```
+6. Run "agent/aws_jumpstart/run.sh", this will trigger another cloudformation to install the agent
+6. You now have a lambda deployed on your account and you can start sending requests, for example:
+```python
+import boto3
 
-### AWS Jump Start getting started
-Deploy Bria model through AWS marketplace (Jumpstart) is possible in 2 ways:
+# Set up the AWS Lambda client
+lambda_client = boto3.client('lambda', region_name='your_region')
 
-1. Integrate directly from AWS marketplace, this will create an endpoint  to use but all generations will not be fully commercial use due to the fact that attribution metadata (embedding) was not shared with Bria 
-2. Deploy with Bria cloud formation stack - Here you will get a similar stack to the standard agent above, the only difference will be that jump-start inference endpoint will be used VS none managed inference service
+# Specify the Lambda function name
+function_name = 'your_lambda_function_name'
 
-After deployed clients can send requests to a single endpoint and utilize Bria model
+# Input payload for the Lambda function (if needed)
+payload = {
+    "prompt": "A towering redwood tree in a forest, during twilight",
+    "width": 512,
+    "height": 512,
+    "steps": 50,
+    "seed": 42,
+    "negative_prompt": "blue sky, people",
+}
 
+# Make the request to the Lambda function
+response = lambda_client.invoke(
+    FunctionName=function_name,
+    InvocationType='RequestResponse',
+    Payload=json.dumps(payload),
+)
+
+response_payload = json.load(response['Payload'])
+print(response_payload)
+```
 
 # FAQ
 ### Do I have to install the Attribution Agent?
