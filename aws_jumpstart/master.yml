@@ -3,34 +3,33 @@ Parameters:
     Type: String
     Default: "jumpstart-bria-agent"
     Description: S3 Bucket where Lambda code is stored
-  EndpointLambdaCodeS3Key:
-    Type: String
-    Default: "lambdas/api_endpoint_lambda/endpoint_lambda_code.zip"
-    Description: S3 Key for the Lambda code ZIP file
+
   S3BriaBucket: 
     Type: String
     Default: "jumpstart-bria-agent-results"
     Description: Name of the BRIA bucket
+
   S3EmbeddingsPath: 
     Type: String
     Default: "embeddings/"
     Description: S3 Embeddings path
-  SageMakerImage:
-    Type: String
-    Default: "785573368785.dkr.ecr.us-east-1.amazonaws.com/sagemaker-tritonserver:22.10-py3"
-    Description: SageMaker Docker image
-  PutObjectTriggerClipLambda:
-    Type: String
-    Default: "clip-lambda"
-    Description: Name of the Lambda function triggered by S3 put-object
+
   MainRole:
     Type: String
     Default: "arn:aws:iam::300465780738:role/bria-agent"
     Description: Execution Role Arn
+
   InferenceEndpoint:
     Type: String
-    Default: "arn:aws:sagemaker:us-east-1:542375318953:endpoint/triton-gaia-ep-2023-11-20-16-47-06"
-    Description: SD model infrence endpoint
+    Default: triton-gaia-ep-2023-11-22-12-38-24
+    Description: model infrence endpoint
+
+  ApiToken:
+    Type: String
+    Default: 028ff61ba99b421497880f330d625e57
+    Description: model infrence endpoint
+
+
 
 Resources:
   IAMRoleStack:
@@ -42,22 +41,19 @@ Resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: !Ref S3BriaBucket
-  # S3BucketStack:
-  #   Type: AWS::CloudFormation::Stack
-  #   Properties:
-  #     TemplateURL: https://jumpstart-bria-agent.s3.amazonaws.com/s3.yml
-  #     Parameters:
-  #       S3BriaBucket: !Ref S3BriaBucket
 
   LambdaFunctionStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://jumpstart-bria-agent.s3.amazonaws.com/lambdas/api_endpoint_lambda/endpoint-lambda.yml
+      TemplateURL: https://jumpstart-bria-agent.s3.amazonaws.com/lambdas/api_endpoint_lambda/infra/endpoint-lambda.yml
       Parameters:
         CodeS3Bucket: !Ref CodeS3Bucket
-        EndpointLambdaCodeS3Key: !Ref EndpointLambdaCodeS3Key
-        PutObjectTriggerClipLambda: !Ref PutObjectTriggerClipLambda
         BucketName: !Ref S3BriaBucket
         S3EmbeddingsPath: !Ref S3EmbeddingsPath
-        MainRole:  !GetAtt IAMRoleStack.Outputs.IAMRoleARN
+        MainRole:  !Ref MainRole
+        # MainRole:  !GetAtt IAMRoleStack.Outputs.IAMRoleARN
+        ApiToken:  !Ref ApiToken
         InferenceEndpoint: !Ref InferenceEndpoint
+    DependsOn: MyS3Bucket
+
+

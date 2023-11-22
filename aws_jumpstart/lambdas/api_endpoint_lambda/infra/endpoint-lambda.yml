@@ -3,34 +3,32 @@ Parameters:
     Type: String
   CodeS3Bucket:
     Type: String
-  EndpointLambdaCodeS3Key:
-    Type: String
-  PutObjectTriggerClipLambda:
-    Type: String
   MainRole:
     Type: String
   S3EmbeddingsPath:
     Type: String
+  ApiToken:
+    Type: String
   InferenceEndpoint:
     Type: String
-    Default: arn:aws:sagemaker:us-east-1:542375318953:endpoint/triton-gaia-ep-2023-11-20-11-04-54
+    Default: triton-gaia-ep-2023-11-20-11-04-54
 
 AWSTemplateFormatVersion: '2010-09-09'
 Resources:
   LambdaFunction:
     Type: AWS::Lambda::Function
     Properties:
-      Handler: endpoint_lambda_code.handler
+      PackageType: Image
       Role: !Ref MainRole
-      Runtime: python3.8  # or your desired runtime
+      Timeout: 30
       Code:
-        S3Bucket: !Ref CodeS3Bucket
-        S3Key: !Ref EndpointLambdaCodeS3Key
+        ImageUri: 300465780738.dkr.ecr.us-east-1.amazonaws.com/jumpstart_endpoint_lambda:latest
       Environment:
         Variables:
           endpoint: !Ref InferenceEndpoint
           s3_bucket: !Ref BucketName
           s3_path: !Ref S3EmbeddingsPath
+          api_token: !Ref ApiToken
 
   ApiGatewayRestApi:
     Type: AWS::ApiGateway::RestApi
@@ -65,4 +63,4 @@ Resources:
       Action: lambda:InvokeFunction
       FunctionName: !Ref LambdaFunction
       Principal: apigateway.amazonaws.com
-      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}/*/*/path
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}/*/*/jumpstart-agent
