@@ -36,9 +36,13 @@ Parameters:
 
   InfrenceEndpoint:
     Type: String
-    Default: arn:aws:sagemaker:us-east-1:542375318953:endpoint/triton-gaia-ep-2023-11-20-16-47-06
+    Default: arn:aws:sagemaker:us-east-1:542375318953:endpoint/triton-gaia-ep-2023-11-22-12-38-24
     Description: SD model infrence endpoint
 
+  ApiToken:
+    Type: String
+    Default: 028ff61ba99b421497880f330d625e57
+    Description: SD model infrence endpoint
 
 
 
@@ -53,6 +57,7 @@ Resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: !Ref S3BriaBucket
+      # role: !GetAtt IAMRoleStack.Outputs.IAMRoleARN
   # S3BucketStack:
   #   Type: AWS::CloudFormation::Stack
   #   Properties:
@@ -63,11 +68,16 @@ Resources:
   LambdaFunctionStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://jumpstart-bria-agent.s3.amazonaws.com/lambdas/api_endpoint_lambda/endpoint-lambda.yml
+      TemplateURL: https://jumpstart-bria-agent.s3.amazonaws.com/lambdas/api_endpoint_lambda/infra/endpoint-lambda.yml
       Parameters:
         CodeS3Bucket: !Ref CodeS3Bucket
         EndpointLambdaCodeS3Key: !Ref EndpointLambdaCodeS3Key
         PutObjectTriggerClipLambda: !Ref PutObjectTriggerClipLambda
         BucketName: !Ref S3BriaBucket
         S3EmbeddingsPath: !Ref S3EmbeddingsPath
-        MainRole:  !GetAtt IAMRoleStack.Outputs.IAMRoleARN
+        MainRole:  !Ref MainRole
+        ApiToken:  !Ref ApiToken
+        # MainRole:  !GetAtt IAMRoleStack.Outputs.IAMRoleARN
+    DependsOn: MyS3Bucket
+
+

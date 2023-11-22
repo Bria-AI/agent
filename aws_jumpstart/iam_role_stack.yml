@@ -10,7 +10,7 @@ Resources:
         Statement:
           - Effect: Allow
             Principal:
-              Service: [lambda.amazonaws.com, sagemaker.amazonaws.com]
+              Service: [lambda.amazonaws.com, sagemaker.amazonaws.com, "cloudformation.amazonaws.com"]
             Action: sts:AssumeRole
       Path: "/"
       Policies:
@@ -25,6 +25,7 @@ Resources:
                   - sagemaker:*
                   - logs:*
                   - glue:*
+                  - ecr:*
                   - apigateway:POST
                 Resource: "*"
 
