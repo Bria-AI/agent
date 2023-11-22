@@ -3,47 +3,36 @@ Parameters:
     Type: String
     Default: "jumpstart-bria-agent"
     Description: S3 Bucket where Lambda code is stored
-
   EndpointLambdaCodeS3Key:
     Type: String
     Default: "lambdas/api_endpoint_lambda/endpoint_lambda_code.zip"
     Description: S3 Key for the Lambda code ZIP file
-  
   S3BriaBucket: 
     Type: String
     Default: "jumpstart-bria-agent-results"
     Description: Name of the BRIA bucket
-
   S3EmbeddingsPath: 
     Type: String
     Default: "embeddings/"
     Description: S3 Embeddings path
-
   SageMakerImage:
     Type: String
     Default: "785573368785.dkr.ecr.us-east-1.amazonaws.com/sagemaker-tritonserver:22.10-py3"
     Description: SageMaker Docker image
-
   PutObjectTriggerClipLambda:
     Type: String
     Default: "clip-lambda"
     Description: Name of the Lambda function triggered by S3 put-object
-
   MainRole:
     Type: String
-    Default: arn:aws:iam::300465780738:role/bria-agent 
+    Default: "arn:aws:iam::300465780738:role/bria-agent"
     Description: Execution Role Arn
-
-  InfrenceEndpoint:
+  InferenceEndpoint:
     Type: String
-    Default: arn:aws:sagemaker:us-east-1:542375318953:endpoint/triton-gaia-ep-2023-11-20-16-47-06
+    Default: "arn:aws:sagemaker:us-east-1:542375318953:endpoint/triton-gaia-ep-2023-11-20-16-47-06"
     Description: SD model infrence endpoint
 
-
-
-
 Resources:
-
   IAMRoleStack:
     Type: AWS::CloudFormation::Stack
     Properties:
@@ -71,3 +60,4 @@ Resources:
         BucketName: !Ref S3BriaBucket
         S3EmbeddingsPath: !Ref S3EmbeddingsPath
         MainRole:  !GetAtt IAMRoleStack.Outputs.IAMRoleARN
+        InferenceEndpoint: !Ref InferenceEndpoint
