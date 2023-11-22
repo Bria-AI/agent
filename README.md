@@ -1,18 +1,18 @@
 # Bria Attribution Agent
 ![alt text](./assets/architecture.jpeg)
 
-Bria attribution engine supports the data partner's revenue share model as part of Bria.ai Generative platform.
+Bria attribution agent supports the data partner's revenue share model as part of Bria.ai Generative platform.
 To utilize Bria foundation models, it is necessary to collect all generations made by them. When running on the Bria inference service, this logic is taken care of for you. However, if the inference is managed by a third party outside of Bria, you will need to install this Agent. For that, we provide the infrastructure as code for cloud deployment.
 
 # Deploy
 
-### Self Hosted Inferance
+### Self Hosted Inference
 WIP...
 
 ### AWS Jump Start
 1. Deploy one of our [models](https://aws.amazon.com/marketplace/seller-profile?id=seller-ilfk2fw5juhfi) on as sagemaker endpoint
 3. Run the file "agent/aws_jumpstart/init.sh", this will run cloudformation stack to create IAM user 
-4. Send email to support@bria.ai with your IAM user
+4. Send an email to support@bria.ai with your IAM user
 ```Plain
 Title - New agent registration for <name>
 Subject - IAM, <xxx>
@@ -23,7 +23,7 @@ SG_ENDPOINT_ARN="..."
 ...
 ```
 6. Run "agent/aws_jumpstart/run.sh", this will trigger another cloudformation to install the agent
-6. You now have a lambda deployed on your account and you can start sending requests:
+6. You now have a lambda deployed on your account and you can start sending requests, for example:
 ```python
 import boto3
 
