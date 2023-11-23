@@ -1,8 +1,7 @@
 # Bria Attribution Agent
 ![alt text](./assets/architecture.jpeg)
 
-Bria attribution agent supports the data partner's revenue share model as part of Bria.ai Generative platform.
-To utilize Bria foundation models, it is necessary to collect all generations made by them. When running on the Bria inference service, this logic is taken care of for you. However, if the inference is managed by a third party outside of Bria, you will need to install this Agent. For that, we provide the infrastructure as code for cloud deployment.
+BRIA's models are trained exclusively on licensed data and provided with full copyright and privacy infringement legal coverage, subject to implementation of the Attribution Agent as provided below. The Attribution Agent installed on customer side and calculates an irreversible vector. This vector is the only data passed to BRIA. BRIA cannot reproduce any image using the vector and generated images never leave customer account. BRIA receives the information from the Attribution Agent and pays the data partners on your behalf to maintain your legal coverage.
 
 # Deploy
 
