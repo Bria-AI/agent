@@ -10,20 +10,23 @@ To utilize Bria foundation models, it is necessary to collect all generations ma
 WIP...
 
 ### AWS Jump Start
-1. Deploy one of our [models](https://aws.amazon.com/marketplace/seller-profile?id=seller-ilfk2fw5juhfi) on as sagemaker endpoint
-3. Run the file "agent/aws_jumpstart/init.sh", this will run cloudformation stack to create IAM user 
-4. Send an email to support@bria.ai with your IAM user
+1. Send an email to support@bria.ai
 ```Plain
 Title - New agent registration for <name>
-Subject - IAM, <xxx>
+Subject - AWS account id, <xxx>
 ```
-5. After you get responce from us, fill in the config file
+2. Deploy one of our [models](https://aws.amazon.com/marketplace/seller-profile?id=seller-ilfk2fw5juhfi) on as sagemaker endpoint
+5. After you get back email from us, fill in the config file:
 ```YML
 SG_ENDPOINT_ARN="..."
 ...
 ```
-6. Run "agent/aws_jumpstart/run.sh", this will trigger another cloudformation to install the agent
-6. You now have a lambda deployed on your account and you can start sending requests, for example:
+4. Run "agent/aws_jumpstart/run.sh", this will trigger another cloudformation to install the agent
+```YML
+# Make sure the user running the script have at least the following policy
+...
+```
+5. You now have a lambda deployed on your account and you can start sending requests, for example:
 ```python
 import boto3
 
