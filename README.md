@@ -20,11 +20,11 @@ Subject - AWS account id, <xxx>
 [
     {
         "ParameterKey": "LambdaEndpointName",
-        "ParameterValue": "..." # Sagemaker jumpstart model endpoint arn
+        "ParameterValue": "..." # The name of the lambda endpoint e.g. text-2-image
     },
     {
         "ParameterKey": "InferenceEndpoint",
-        "ParameterValue": "..." # The name of the lambda endpoint e.g. text-2-image
+        "ParameterValue": "..." # Sagemaker jumpstart model endpoint arn
     },
     {
         "ParameterKey": "ApiToken",
