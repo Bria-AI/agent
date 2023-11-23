@@ -15,11 +15,11 @@ Title - New agent registration for <name>
 Subject - AWS account id, <xxx>
 ```
 2. Deploy one of our [models](https://aws.amazon.com/marketplace/seller-profile?id=seller-ilfk2fw5juhfi) on as sagemaker endpoint
-3. After you get back email from us, fill in "config.json":
+3. After you get back email from us, fill in `config.json`:
 ```YML
 [
     {
-        "ParameterKey": "JumpStartARN",
+        "ParameterKey": "LambdaEndpointName",
         "ParameterValue": "..." # Sagemaker jumpstart model endpoint arn
     },
     {
@@ -32,7 +32,7 @@ Subject - AWS account id, <xxx>
     }
 ]
 ```
-4. Run "agent/aws_jumpstart/run.sh", this will trigger another cloudformation to install the agent
+4. Run `install.sh`, this will trigger another cloudformation to install the agent
 ```YML
 # Make sure the user running the script have at least the following policy
 ...
