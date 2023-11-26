@@ -1,8 +1,7 @@
 # Bria Attribution Agent
 ![alt text](./assets/architecture.jpeg)
 
-Bria attribution agent supports the data partner's revenue share model as part of Bria.ai Generative platform.
-To utilize Bria foundation models, it is necessary to collect all generations made by them. When running on the Bria inference service, this logic is taken care of for you. However, if the inference is managed by a third party outside of Bria, you will need to install this Agent. For that, we provide the infrastructure as code for cloud deployment.
+BRIA's models are trained exclusively on licensed data and provided with full copyright and privacy infringement legal coverage, subject to implementation of the Attribution Agent as provided below. The Attribution Agent installed on customer side and calculates an irreversible vector. This vector is the only data passed to BRIA. BRIA cannot reproduce any image using the vector and generated images never leave customer account. BRIA receives the information from the Attribution Agent and pays the data partners on your behalf to maintain your legal coverage.
 
 # Deploy
 
@@ -10,20 +9,35 @@ To utilize Bria foundation models, it is necessary to collect all generations ma
 WIP...
 
 ### AWS Jump Start
-1. Deploy one of our [models](https://aws.amazon.com/marketplace/seller-profile?id=seller-ilfk2fw5juhfi) on as sagemaker endpoint
-3. Run the file "agent/aws_jumpstart/init.sh", this will run cloudformation stack to create IAM user 
-4. Send an email to support@bria.ai with your IAM user
+1. Send an email to support@bria.ai
 ```Plain
 Title - New agent registration for <name>
-Subject - IAM, <xxx>
+Subject - AWS account id, <xxx>
 ```
-5. After you get responce from us, fill in the config file
+2. Deploy one of our [models](https://aws.amazon.com/marketplace/seller-profile?id=seller-ilfk2fw5juhfi) on as sagemaker endpoint
+3. After you get back email from us, fill in `config.json`:
 ```YML
-SG_ENDPOINT_ARN="..."
+[
+    {
+        "ParameterKey": "LambdaEndpointName",
+        "ParameterValue": "..." # The name of the lambda endpoint e.g. text-2-image
+    },
+    {
+        "ParameterKey": "InferenceEndpoint",
+        "ParameterValue": "..." # Sagemaker jumpstart model endpoint arn
+    },
+    {
+        "ParameterKey": "ApiToken",
+        "ParameterValue": "..." # Token you recived in mail
+    }
+]
+```
+4. Run `install.sh`, this will trigger another cloudformation to install the agent
+```YML
+# Make sure the user running the script have at least the following policy
 ...
 ```
-6. Run "agent/aws_jumpstart/run.sh", this will trigger another cloudformation to install the agent
-6. You now have a lambda deployed on your account and you can start sending requests, for example:
+5. You now have a lambda deployed on your account and you can start sending requests, for example:
 ```python
 import boto3
 
