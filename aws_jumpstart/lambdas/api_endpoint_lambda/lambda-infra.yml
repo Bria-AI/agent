@@ -1,8 +1,6 @@
 Parameters:
   BucketName:
     Type: String
-  CodeS3Bucket:
-    Type: String
   MainRole:
     Type: String
   S3EmbeddingsPath:
@@ -22,7 +20,7 @@ Resources:
       Role: !Ref MainRole
       Timeout: 30
       Code:
-        ImageUri: 300465780738.dkr.ecr.us-east-1.amazonaws.com/jumpstart_endpoint_lambda:latest
+        ImageUri: 542375318953.dkr.ecr.us-east-1.amazonaws.com/jumpstart_endpoint_lambda:latest
       Environment:
         Variables:
           endpoint: !Ref InferenceEndpoint

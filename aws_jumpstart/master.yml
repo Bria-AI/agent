@@ -14,11 +14,6 @@ Parameters:
     Default: "embeddings/"
     Description: S3 Embeddings path
 
-  MainRole:
-    Type: String
-    Default: "arn:aws:iam::300465780738:role/bria-agent"
-    Description: Execution Role Arn
-
   InferenceEndpoint:
     Type: String
     Default: triton-gaia-ep-2023-11-22-12-38-24
@@ -27,8 +22,18 @@ Parameters:
   ApiToken:
     Type: String
     Default: 028ff61ba99b421497880f330d625e57
-    Description: model infrence endpoint
+    Description: Company API token to Bria
 
+  ModelVersion:
+    Type: String
+    Default: "1.4"
+    AllowedValues: ["1.4", "2.0"]
+    Description: Bria model version
+
+  MainRole:
+    Type: String
+    Default: "arn:aws:iam::300465780738:role/bria-agent"
+    Description: Execution Role Arn
 
 
 Resources:
@@ -41,19 +46,39 @@ Resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: !Ref S3BriaBucket
+        NotificationConfiguration:
+          LambdaConfigurations:
+            - Event: s3:ObjectCreated:*
+              Function: !GetAtt EmbeddingDispatcherLambdaFunctionStack.Outputs.LambdaFunctionARN
+              Filter:
+                S3Key:
+                  Rules:
+                  - Name: suffix
+                    Value: .json
+      DependsOn: EmbeddingDispatcherLambdaFunctionStack
 
-  LambdaFunctionStack:
+  EndpointLambdaFunctionStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://jumpstart-bria-agent.s3.amazonaws.com/lambdas/api_endpoint_lambda/infra/endpoint-lambda.yml
+      TemplateURL: https://jumpstart-bria-agent.s3.amazonaws.com/lambdas/api_endpoint_lambda/lambda-infra.yml
       Parameters:
-        CodeS3Bucket: !Ref CodeS3Bucket
         BucketName: !Ref S3BriaBucket
         S3EmbeddingsPath: !Ref S3EmbeddingsPath
         MainRole:  !Ref MainRole
         # MainRole:  !GetAtt IAMRoleStack.Outputs.IAMRoleARN
         ApiToken:  !Ref ApiToken
         InferenceEndpoint: !Ref InferenceEndpoint
-    DependsOn: MyS3Bucket
+    DependsOn: IAMRoleStack
 
-
+  EmbeddingDispatcherLambdaFunctionStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://jumpstart-bria-agent.s3.amazonaws.com/lambdas/embeddings_dispatcher/lambda-infra.yml
+      Parameters:
+        BucketName: !Ref S3BriaBucket
+        S3EmbeddingsPath: !Ref S3EmbeddingsPath
+        MainRole:  !Ref MainRole
+        # MainRole: !GetAtt IAMRoleStack.Outputs.IAMRoleARN
+        ApiToken: !Ref ApiToken
+        ModelVersion: !Ref ModelVersion
+    DependsOn: IAMRoleStack

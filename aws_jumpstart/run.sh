@@ -19,7 +19,7 @@ if [ -f "$config_file_name" ]; then
     config_file="--parameters file://$config_file_name"
 fi
 
-aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 300465780738.dkr.ecr.us-east-1.amazonaws.com
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 542375318953.dkr.ecr.us-east-1.amazonaws.com
 
 # copy to s3
 aws s3 sync . s3://$bucket_name/ --exclude "*.py" --exclude "*.pyc"
