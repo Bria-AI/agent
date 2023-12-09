@@ -1,0 +1,44 @@
+Description: "Basic Hosting entities test.  We need models to create endpoint configs."
+Parameters:
+  SageMakerImage:
+    Type: String
+    Default: 542375318953.dkr.ecr.us-east-1.amazonaws.com/sagemaker-tritonserver:latest
+  MainRole:
+    Type: String
+
+Resources:
+  Endpoint:
+    Type: "AWS::SageMaker::Endpoint"
+    Properties:
+      EndpointName: bria-attribution-agent
+      EndpointConfigName:
+        !GetAtt EndpointConfig.EndpointConfigName
+        
+  EndpointConfig:
+    Type: "AWS::SageMaker::EndpointConfig"
+    Properties:
+      ProductionVariants:
+        - InitialInstanceCount: 1
+          InitialVariantWeight: 1.0
+          InstanceType: ml.g4dn.xlarge
+          ModelName: !GetAtt Model.ModelName
+          VariantName: !GetAtt Model.ModelName
+  Model:
+    Type: "AWS::SageMaker::Model"
+    Properties:
+      PrimaryContainer:
+        Image: !Ref SageMakerImage
+        Mode: MultiModel
+        ModelDataUrl: s3://sagemaker-us-east-1-300465780738/clip/
+      ExecutionRoleArn: !Ref MainRole
+      ModelName: "clip"
+
+
+Outputs:
+  SageMakerEndpointName:
+    Description: "Name of the SageMaker Endpoint"
+    Value: !GetAtt Endpoint.EndpointName
+
+  ModelFileName:
+    Description: "Name of the Model File"
+    Value: "clip_image_model_v0.tar.gz"

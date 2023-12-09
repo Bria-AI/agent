@@ -1,0 +1,19 @@
+[
+    {
+        "ParameterKey": "S3BriaBucket",
+        "ParameterValue": "jumpstart-bria-test-results"
+    },
+    {
+        "ParameterKey": "InferenceEndpoint",
+        "ParameterValue": "triton-gaia-ep-2023-11-20-16-47-06"
+    },
+    {
+        "ParameterKey": "ApiToken",
+        "ParameterValue": "a10d6386dd6a11ebba800242ac130004"
+    },
+    {
+        "ParameterKey": "ModelVersion",
+        "ParameterValue": "1.4"
+    }
+    
+]

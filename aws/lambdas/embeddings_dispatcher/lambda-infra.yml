@@ -1,0 +1,53 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  MainRole:
+    Type: String
+  ApiToken:
+    Type: String
+  ModelVersion:
+    Type: String
+  JumpStartEmbeddingsDispatcherImage:
+    Type: String
+    Default: 542375318953.dkr.ecr.us-east-1.amazonaws.com/jumpstart_embedding_dispatcher:latest
+  AttributionEndpoint:
+    Type: String
+    NoEcho: true
+    Default:  https://lx5eculobj.execute-api.us-east-1.amazonaws.com/v1/bria-agent-attribution
+  EmbeddingsQueueArn:
+    Type: String
+    Description: "ARN of the Embeddings SQS Queue"
+  EmbeddingsQueueUrl:
+    Type: String
+    Description: "ARN of the Embeddings SQS Queue"
+
+Resources:
+  LambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      PackageType: Image
+      Role: !Ref MainRole
+      Timeout: 30
+      Code:
+        ImageUri: !Ref JumpStartEmbeddingsDispatcherImage
+      Environment:
+        Variables:
+          attribution_endpoint: !Ref AttributionEndpoint
+          api_token: !Ref ApiToken
+          model_version: !Ref ModelVersion
+          queue_url: !Ref EmbeddingsQueueUrl
+
+  SQSEvent:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      EventSourceArn: !Ref EmbeddingsQueueArn
+      FunctionName: !GetAtt LambdaFunction.Arn
+      Enabled: true
+      BatchSize: 10 
+      FunctionResponseTypes: [ReportBatchItemFailures]
+
+Outputs:
+  LambdaFunctionARN:
+    Description: "ARN of the Lambda Function"
+    Value: !GetAtt LambdaFunction.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-LambdaFunctionARN"

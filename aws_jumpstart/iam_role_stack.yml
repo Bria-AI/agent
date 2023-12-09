@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: IAM Role with comprehensive permissions for various services
+
+Resources:
+  ComprehensiveIAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: jumpstart-bria-agent-role
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: [lambda.amazonaws.com, sagemaker.amazonaws.com, "cloudformation.amazonaws.com"]
+            Action: sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: ComprehensivePermissions
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - lambda:*
+                  - s3:*
+                  - sagemaker:*
+                  - logs:*
+                  - glue:*
+                  - ecr:*
+                  - apigateway:*
+                  - iam:PassRole
+                Resource: "*"
+
+Outputs:
+  IAMRoleARN:
+    Description: "ARN of the IAM Role"
+    Value: !GetAtt ComprehensiveIAMRole.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-IAMRoleARN"

@@ -1,0 +1,75 @@
+Parameters:
+  CodeS3Bucket:
+    Type: String
+    Default: "jumpstart-bria-agent"
+    Description: S3 Bucket where Lambda code is stored
+
+  S3BriaBucket: 
+    Type: String
+    Default: "jumpstart-bria-agent-results"
+    Description: Name of the BRIA bucket
+
+  S3EmbeddingsPath: 
+    Type: String
+    Default: "embeddings/"
+    Description: S3 Embeddings path
+
+  InferenceEndpoint:
+    Type: String
+    Default: bria-jumpstart-sdxl-v2-0-ep-2023-11-23-10-15-25
+    Description: model infrence endpoint
+
+  ApiToken:
+    Type: String
+    Default: 028ff61ba99b421497880f330d625e57
+    Description: Company API token to Bria
+
+  ModelVersion:
+    Type: String
+    Default: "1.4"
+    AllowedValues: ["1.4", "2.0"]
+    Description: Bria model version
+
+  MainRole:
+    Type: String
+    Description: Execution Role Arn
+
+
+Resources:
+  MyS3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: !Ref S3BriaBucket
+      DependsOn: EmbeddingDispatcherLambdaFunctionStack
+
+  EndpointLambdaFunctionStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://jumpstart-bria-agent.s3.amazonaws.com/lambdas/api_endpoint_lambda/lambda-infra.yml
+      Parameters:
+        BucketName: !Ref S3BriaBucket
+        S3EmbeddingsPath: !Ref S3EmbeddingsPath
+        MainRole:  !Ref MainRole
+        ApiToken:  !Ref ApiToken
+        InferenceEndpoint: !Ref InferenceEndpoint
+        EmbeddingsQueueUrl: !GetAtt SqsStack.Outputs.EmbeddingsQueueUrl
+    DependsOn: [SqsStack]
+
+  SqsStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://aws-bria-agent.s3.amazonaws.com/sqs.yml
+
+  EmbeddingDispatcherLambdaFunctionStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://jumpstart-bria-agent.s3.amazonaws.com/lambdas/embeddings_dispatcher/lambda-infra.yml
+      Parameters:
+        BucketName: !Ref S3BriaBucket
+        S3EmbeddingsPath: !Ref S3EmbeddingsPath
+        MainRole:  !Ref MainRole
+        ApiToken: !Ref ApiToken
+        ModelVersion: !Ref ModelVersion
+        EmbeddingsQueueArn: !GetAtt SqsStack.Outputs.EmbeddingsQueueWithDLQArn
+        EmbeddingsQueueUrl: !GetAtt SqsStack.Outputs.EmbeddingsQueueUrl
+    DependsOn: SqsStack
