@@ -1,0 +1,10 @@
+[
+    {
+        "ParameterKey": "InferenceEndpoint",
+        "ParameterValue": "bria-jumpstart-sdxl-v2-0-ep-2023-11-23-10-15-25"
+    },
+    {
+        "ParameterKey": "ApiToken",
+        "ParameterValue": "a10d6386dd6a11ebba800242ac130004"
+    }
+]

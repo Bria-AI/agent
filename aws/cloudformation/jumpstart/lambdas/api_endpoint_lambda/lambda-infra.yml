@@ -1,0 +1,77 @@
+Parameters:
+  MainRole:
+    Type: String
+  InferenceEndpoint:
+    Type: String
+    Default: triton-gaia-ep-2023-11-20-11-04-54
+  EmbeddingsQueueUrl:
+    Type: String
+
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  LambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      PackageType: Image
+      Role: !Ref MainRole
+      Timeout: 30
+      Code:
+        ImageUri: 542375318953.dkr.ecr.us-east-1.amazonaws.com/jumpstart_endpoint_lambda:latest
+      Environment:
+        Variables:
+          endpoint: !Ref InferenceEndpoint
+          queue_url: !Ref EmbeddingsQueueUrl
+
+  ApiGatewayRestApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: LambdaApiGateway
+      Description: API Gateway for Lambda function
+
+  ApiGatewayResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
+      PathPart: jumpstart-agent  # the path of your API endpoint
+      RestApiId: !Ref ApiGatewayRestApi
+
+  ApiGatewayMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: POST  # or GET, depending on your needs
+      ResourceId: !Ref ApiGatewayResource
+      RestApiId: !Ref ApiGatewayRestApi
+      AuthorizationType: AWS_IAM  # or your chosen authorization
+      Integration:
+        IntegrationHttpMethod: POST  # or GET
+        Type: AWS_PROXY
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaFunction.Arn}/invocations
+      MethodResponses:
+        - StatusCode: 200
+
+  ApiGatewayDeployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn: ApiGatewayMethod  # Ensures that the deployment happens after the API method is created
+    Properties:
+      RestApiId: !Ref ApiGatewayRestApi
+      # An optional description for the deployment
+      Description: 'My API Deployment'
+      # A timestamp for when the deployment is created, ensuring it gets updated
+      StageName: 'unused'  # This is a placeholder, real stage is defined below
+
+  ApiGatewayStage:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      StageName: 'prod'  # The name of your stage
+      Description: 'Production Stage'  # Optional
+      RestApiId: !Ref ApiGatewayRestApi
+      DeploymentId: !Ref ApiGatewayDeployment
+
+
+  LambdaPermissionApiGateway:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref LambdaFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}/prod/jumpstart-agent

@@ -1,0 +1,31 @@
+Resources:
+  EmbeddingsQueue:
+    Type: AWS::SQS::Queue
+
+  EmbeddingsDeadLetterQueue:
+    Type: AWS::SQS::Queue
+
+  EmbeddingsQueueWithDLQ:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: "bria-agent-embeddings-queue"
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt EmbeddingsDeadLetterQueue.Arn
+        maxReceiveCount: 5 # Number of retries before moving to DLQ
+
+  EmbeddingsDeadLetterQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: "bria-agent-embeddings-dead-queue"
+
+Outputs:
+  EmbeddingsQueueWithDLQArn:
+    Description: "ARN of the Embeddings Queue"
+    Value: !GetAtt EmbeddingsQueueWithDLQ.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-EmbeddingsQueueWithDLQArn"
+  EmbeddingsQueueUrl:
+    Description: "URL of the Embeddings SQS Queue"
+    Value: !Ref EmbeddingsQueueWithDLQ
+    Export:
+      Name: !Sub "${AWS::StackName}-EmbeddingsQueueUrl"

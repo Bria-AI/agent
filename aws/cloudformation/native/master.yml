@@ -1,0 +1,75 @@
+Parameters:
+  CodeS3Bucket:
+    Type: String
+    Default: "aws-bria-agent"
+    Description: S3 Bucket where Lambda code is stored
+
+  S3BriaBucket: 
+    Type: String
+    Default: "aws-bria-agent-results"
+    Description: Name of the BRIA bucket
+
+  ApiToken:
+    Type: String
+    Description: Company API token to Bria
+
+  ModelVersion:
+    Type: String
+    AllowedValues: ["1.4", "2.0"]
+    Description: Bria model version
+
+  MainRole:
+    Type: String
+    Description: Execution Role Arn
+
+Resources:
+  MyS3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: !Ref S3BriaBucket
+        NotificationConfiguration:
+          LambdaConfigurations:
+            - Event: s3:ObjectCreated:*
+              Function: !GetAtt ImageCreationHandlerLambdaFunctionStack.Outputs.LambdaFunctionARN
+              Filter:
+                S3Key:
+                  Rules:
+                  - Name: prefix
+                    Value: images
+      DependsOn: ImageCreationHandlerLambdaFunctionStack
+
+  ImageCreationHandlerLambdaFunctionStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://aws-bria-agent.s3.amazonaws.com/lambdas/image_embeddings_calculator/lambda-infra.yml
+      Parameters:
+        BucketName: !Ref S3BriaBucket
+        MainRole:  !Ref MainRole
+        SageMakerEndpointName:  !GetAtt AttributionSageMakerStack.Outputs.SageMakerEndpointName
+        EmbeddingsQueueUrl: !GetAtt SqsStack.Outputs.EmbeddingsQueueUrl
+    DependsOn: [AttributionSageMakerStack, SqsStack]
+
+  AttributionSageMakerStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://aws-bria-agent.s3.amazonaws.com/SageMaker.yml
+      Parameters:
+        MainRole:  !Ref MainRole
+
+  SqsStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://aws-bria-agent.s3.amazonaws.com/sqs.yml
+
+  EmbeddingDispatcherLambdaFunctionStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://aws-bria-agent.s3.amazonaws.com/lambdas/embeddings_dispatcher/lambda-infra.yml
+      Parameters:
+        MainRole: !Ref MainRole
+        ApiToken: !Ref ApiToken
+        ModelVersion: !Ref ModelVersion
+        EmbeddingsQueueArn: !GetAtt SqsStack.Outputs.EmbeddingsQueueWithDLQArn
+        EmbeddingsQueueUrl: !GetAtt SqsStack.Outputs.EmbeddingsQueueUrl
+
+    DependsOn: SqsStack

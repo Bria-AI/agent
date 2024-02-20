@@ -1,0 +1,40 @@
+Parameters:
+  MainRole:
+    Type: String
+  BucketName:
+    Type: String
+  SageMakerEndpointName:
+    Type: String
+  EmbeddingsQueueUrl:
+    Type: String
+    
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  LambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      PackageType: Image
+      Role: !Ref MainRole
+      Timeout: 30
+      Code:
+        ImageUri: 542375318953.dkr.ecr.us-east-1.amazonaws.com/agent_image_embeddings_calculator:latest
+      Environment:
+        Variables:
+          queue_url: !Ref EmbeddingsQueueUrl
+          sagemaker_endpoint: !Ref SageMakerEndpointName
+
+  LambdaInvokePermission:
+    Type: "AWS::Lambda::Permission"
+    Properties:
+      FunctionName: !Ref LambdaFunction
+      Action: "lambda:InvokeFunction"
+      Principal: "s3.amazonaws.com"
+      SourceAccount: !Ref "AWS::AccountId"
+      SourceArn: !Sub "arn:aws:s3:::${BucketName}"
+
+Outputs:
+  LambdaFunctionARN:
+    Description: "ARN of the IAM Role"
+    Value: !GetAtt LambdaFunction.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-IAMRoleARN"
