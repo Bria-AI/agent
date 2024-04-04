@@ -12,28 +12,30 @@ module "image_handler_func" {
 
   name_suffix = "image-creation-handler"
 
-   service_plan_custom_name = "plan-image-handler-func"
-  os_type              = "Linux"
-  function_app_version = 3
+  service_plan_custom_name = "plan-image-handler-func"
+  os_type                  = "Linux"
+  function_app_version     = 4
 
   function_app_site_config = {
     application_stack = {
-      docker = {
-        registry_url      = var.registry_url
-        image_name        = var.image_handler_image_name
-        image_tag         = var.image_handler_image_tag
-        registry_username = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.spn_client_id.id})"
-        registry_password = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.spn_client_secret.id})"
-      }
+      python_version = "3.8"
+      #      docker = {
+      #        registry_url      = var.registry_url
+      #        image_name        = var.image_handler_image_name
+      #        image_tag         = var.image_handler_image_tag
+      #        registry_username = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.spn_client_id.id})"
+      #        registry_password = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.spn_client_secret.id})"
+      #      }
     }
   }
 
   function_app_application_settings = {
-    queue_url          = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.queue_send_authorization_rule.id})"
-    sagemaker_endpoint = ""
+    FUNCTIONS_WORKER_RUNTIME = "python"
+    queue_url                = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.queue_send_authorization_rule.id})"
+    sagemaker_endpoint       = ""
   }
 
-  identity_type = "SystemAssigned"
+  identity_type                = "SystemAssigned"
   application_insights_enabled = true
 
   use_existing_storage_account = true

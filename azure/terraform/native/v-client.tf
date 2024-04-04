@@ -47,32 +47,32 @@ variable "embeddings_queue_name" {
 #
 # func
 #
-variable "registry_url" {
-  type        = string
-  description = "The registry url of the func images"
-  default     = "change-me"
-}
-
-variable "embeddings_image_name" {
-  type        = string
-  description = "The The image name for the embedding func"
-  default     = "change-me"
-}
-
-variable "embeddings_image_tag" {
-  type        = string
-  description = "The The image tag for the embedding func"
-  default     = "latest"
-}
-
-variable "image_handler_image_name" {
-  type        = string
-  description = "The The image name for the image handler func"
-  default     = "change-me"
-}
-
-variable "image_handler_image_tag" {
-  type        = string
-  description = "The The image tag for the image handler func"
-  default     = "latest"
-}
+#variable "registry_url" {
+#  type        = string
+#  description = "The registry url of the func images"
+#  default     = "change-me"
+#}
+#
+#variable "embeddings_image_name" {
+#  type        = string
+#  description = "The The image name for the embedding func"
+#  default     = "change-me"
+#}
+#
+#variable "embeddings_image_tag" {
+#  type        = string
+#  description = "The The image tag for the embedding func"
+#  default     = "latest"
+#}
+#
+#variable "image_handler_image_name" {
+#  type        = string
+#  description = "The The image name for the image handler func"
+#  default     = "change-me"
+#}
+#
+#variable "image_handler_image_tag" {
+#  type        = string
+#  description = "The The image tag for the image handler func"
+#  default     = "latest"
+#}

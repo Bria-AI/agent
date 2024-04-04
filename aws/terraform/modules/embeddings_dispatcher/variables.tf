@@ -1,10 +1,10 @@
-variable "api_token"            { type = string }
-variable "bucket_name"          { type = string }
-variable "execution_role"       { type = string }
+variable "api_token" { type = string }
+variable "bucket_name" { type = string }
+variable "execution_role" { type = string }
 variable "embeddings_queue_arn" { type = string }
 variable "embeddings_queue_url" { type = string }
-variable "model_version"        { type = string }
-variable "s3_embeddings_path"   { type = string }
+variable "model_version" { type = string }
+variable "s3_embeddings_path" { type = string }
 
 variable "attribution_endpoint" {
   type      = string

@@ -10,30 +10,32 @@ module "embeddings_dispatcher_func" {
   location_short      = module.azure_region.location_short
   resource_group_name = module.rg.resource_group_name
 
-  name_suffix = "embeddings-dispatcher"
+  name_suffix              = "embeddings-dispatcher"
   service_plan_custom_name = "plan-embeddings-dispatcher-func"
 
   os_type              = "Linux"
-  function_app_version = 3
+  function_app_version = 4
   function_app_site_config = {
     application_stack = {
-      docker = {
-        registry_url      = var.registry_url
-        image_name        = var.embeddings_image_name
-        image_tag         = var.embeddings_image_tag
-        registry_username = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.spn_client_id.id})"
-        registry_password = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.spn_client_secret.id})"
-      }
+      python_version = "3.8"
+      #      docker = {
+      #        registry_url      = var.registry_url
+      #        image_name        = var.embeddings_image_name
+      #        image_tag         = var.embeddings_image_tag
+      #        registry_username = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.spn_client_id.id})"
+      #        registry_password = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.spn_client_secret.id})"
+      #      }
     }
   }
 
   function_app_application_settings = {
-    attribution_endpoint = ""
-    api_token            = var.bria_api_token
-    model_version        = var.bria_model_version
-    queue_url            = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.queue_listen_authorization_rule.id})"
+    FUNCTIONS_WORKER_RUNTIME = "python"
+    attribution_endpoint     = ""
+    api_token                = var.bria_api_token
+    model_version            = var.bria_model_version
+    queue_url                = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.queue_listen_authorization_rule.id})"
   }
-  identity_type = "SystemAssigned"
+  identity_type                = "SystemAssigned"
   application_insights_enabled = true
 
   use_existing_storage_account = true

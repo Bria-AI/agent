@@ -1,7 +1,7 @@
 resource "aws_lambda_function" "image_creation_handler" {
   function_name = var.name
 
-  role    = var.execution_role
+  role = var.execution_role
 
   package_type = "Image"
   timeout      = 30
@@ -10,8 +10,8 @@ resource "aws_lambda_function" "image_creation_handler" {
 
   environment {
     variables = {
-      queue_url           = var.embeddings_queue_url
-      sagemaker_endpoint  = var.sagemaker_endpoint
+      queue_url          = var.embeddings_queue_url
+      sagemaker_endpoint = var.sagemaker_endpoint
     }
   }
 }

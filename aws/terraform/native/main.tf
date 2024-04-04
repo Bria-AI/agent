@@ -1,7 +1,7 @@
 module "iam_roles" {
   source = "../modules/iam_roles"
 
-  name   = var.execution_role_name
+  name = var.execution_role_name
 }
 
 module "bucket" {
@@ -13,7 +13,7 @@ module "bucket" {
 module "embeddings_queue" {
   source = "../modules/embeddings_queue"
 
-  name   = var.embeddings_queue_name
+  name = var.embeddings_queue_name
 }
 
 module "embeddings_dispatcher" {
@@ -24,7 +24,7 @@ module "embeddings_dispatcher" {
   execution_role     = module.iam_roles.execution_role_arn
   model_version      = var.bria_model_version
   s3_embeddings_path = var.s3_embeddings_prefix
-  
+
   embeddings_queue_arn = module.embeddings_queue.arn
   embeddings_queue_url = module.embeddings_queue.url
 }
@@ -32,7 +32,7 @@ module "embeddings_dispatcher" {
 module "attribution_sagemaker" {
   source = "../modules/attribution_sagemaker"
 
-  execution_role     = module.iam_roles.execution_role_arn
+  execution_role = module.iam_roles.execution_role_arn
 }
 
 module "image_creation_handler" {

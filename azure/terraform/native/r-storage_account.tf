@@ -84,13 +84,30 @@ module "ml_backend_storage_account" {
   network_bypass = [
     "AzureServices"
   ]
-  default_firewall_action = "Allow"
+  default_firewall_action      = "Allow"
+  storage_blob_data_protection = {}
 
-  containers = [
-    {
-      name = local.embeddings_container_name
-    }
-  ]
+  storage_blob_cors_rule = {
+    allowed_headers = ["*"]
+    allowed_methods = [
+      "GET",
+      "HEAD",
+      "PUT",
+      "DELETE",
+      "OPTIONS",
+      "POST",
+      "PATCH"
+    ]
+    allowed_origins = [
+      "https://mlworkspace.azure.ai",
+      "https://ml.azure.com",
+      "https://*.ml.azure.com",
+      "https://ai.azure.com",
+      "https://*.ai.azure.com",
+    ]
+    exposed_headers    = ["*"]
+    max_age_in_seconds = 1800
+  }
 
   extra_tags = merge(local.extra_tags, {
   })

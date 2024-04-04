@@ -1,7 +1,7 @@
 resource "aws_lambda_function" "embeddings" {
   function_name = "embeddings_dispatcher"
   package_type  = "Image"
-  
+
   role      = var.execution_role
   image_uri = var.jump_start_embeddings_dispatcher_image
   timeout   = var.timeout
@@ -19,7 +19,7 @@ resource "aws_lambda_function" "embeddings" {
 resource "aws_lambda_event_source_mapping" "sqs_event" {
   enabled                 = true
   function_response_types = ["ReportBatchItemFailures"]
-  
+
   event_source_arn = var.embeddings_queue_arn
   function_name    = aws_lambda_function.embeddings.arn
   batch_size       = var.batch_size

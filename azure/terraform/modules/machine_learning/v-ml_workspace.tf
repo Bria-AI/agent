@@ -23,39 +23,39 @@ variable "identity_ids" {
 variable "kind" {
   description = "(Optional) The type of the Workspace. Possible values are Default, FeatureStore. Defaults to Default"
   type        = string
-  default = "Default"
+  default     = "Default"
 }
 
 variable "container_registry_id" {
-  description =<<EOF
+  description = <<EOF
   (Optional) The ID of the container registry associated with this Machine Learning Workspace. Changing this forces a new resource to be created.
   NOTE:
   The admin_enabled should be true in order to associate the Container Registry to this Machine Learning Workspace."
 EOF
   type        = string
-  default = null
+  default     = null
 }
 
 variable "public_network_access_enabled" {
   description = "(Optional) Enable public access when this Machine Learning Workspace is behind VNet."
   type        = string
-  default = false
+  default     = false
 }
 
 variable "image_build_compute_name" {
   description = "(Optional) The compute name for image build of the Machine Learning Workspace."
   type        = string
-  default = null
+  default     = null
 }
 
 variable "description" {
   description = "(Optional) The description of this Machine Learning Workspace."
   type        = string
-  default = null
+  default     = null
 }
 
 variable "encryption" {
-  description =<<EOF
+  description = <<EOF
 (Optional) An encryption block as defined below. Changing this forces a new resource to be created.
 
     key_vault_id - (Required) The ID of the keyVault where the customer owned encryption key is present.
@@ -65,13 +65,13 @@ variable "encryption" {
     user_assigned_identity_id - (Optional) The Key Vault URI to access the encryption key.
 
 EOF
-  type        = object({
-    key_vault_id  = string
-    key_id = string
+  type = object({
+    key_vault_id              = string
+    key_id                    = string
     user_assigned_identity_id = optional(string)
 
   })
-  default     = null
+  default = null
 }
 
 variable "managed_network" {
@@ -79,7 +79,7 @@ variable "managed_network" {
  (Optional) A managed_network block as defined below.
   isolation_mode - (Optional) The isolation mode of the Machine Learning Workspace. Possible values are Disabled, AllowOnlyApprovedOutbound, and AllowInternetOutb
 EOF
-  type        = object({
+  type = object({
     isolation_mode = optional(string)
 
   })
@@ -101,10 +101,10 @@ variable "feature_store" {
 
     feature_store must be set whenkind is FeatureStore
 EOF
-  type        = object({
+  type = object({
     computer_spark_runtime_version = optional(string)
-    offline_connection_name = optional(string)
-    online_connection_name = optional(string)
+    offline_connection_name        = optional(string)
+    online_connection_name         = optional(string)
 
   })
   default = null
@@ -113,19 +113,19 @@ EOF
 variable "friendly_name" {
   description = "(Optional) Display name for this Machine Learning Workspace."
   type        = string
-  default = null
+  default     = null
 }
 
 variable "high_business_impact" {
   description = " (Optional) Flag to signal High Business Impact (HBI) data in the workspace and reduce diagnostic data collected by the service. Changing this forces a new resource to be created."
   type        = string
-  default = null
+  default     = null
 }
 
 variable "primary_user_assigned_identity" {
   description = "(Optional) The user assigned identity id that represents the workspace identity."
   type        = string
-  default = null
+  default     = null
 }
 
 variable "v1_legacy_mode_enabled" {
