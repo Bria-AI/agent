@@ -52,7 +52,7 @@ module "embeddings_dispatcher_func" {
 }
 
 # Storage permissions
-resource "azurerm_role_assignment" "sa_data_contributor_embeddings_dispatcher_func" {
+resource "azurerm_role_assignment" "sa_image_uploader_data_contributor_embeddings_dispatcher_func" {
   principal_id         = module.embeddings_dispatcher_func.function_app_identity.principal_id
   scope                = module.image_uploader_storage_account.storage_account_id
   role_definition_name = "Storage Blob Data Contributor"
@@ -60,7 +60,7 @@ resource "azurerm_role_assignment" "sa_data_contributor_embeddings_dispatcher_fu
 
 # embeddings_queue_name permissions
 
-resource "azurerm_role_assignment" "sb_image_queue_contributor_embeddings_dispatcher_func" {
+resource "azurerm_role_assignment" "sb_embeddings_queue_contributor_embeddings_dispatcher_func" {
   principal_id         = module.image_handler_func.function_app_identity.principal_id
   scope                = module.embeddings_queue.queues[var.embeddings_queue_name].id
   role_definition_name = "Azure Service Bus Data Receiver"

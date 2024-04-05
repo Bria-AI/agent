@@ -31,5 +31,22 @@ module "ml_workspace" {
     }
   }
 
+  datastore_blob_storage_map = {
+    model = {
+      name                       = "model"
+      custom_name                = "bria_model"
+      storage_container_id       = module.model_storage_account.storage_blob_containers[local.model_container_name].resource_manager_id
+      account_key                = module.model_storage_account.storage_account_properties.primary_access_key
+      service_data_auth_identity = "WorkspaceSystemAssignedIdentity"
+    }
+  }
+
   extra_tags = merge(local.extra_tags, {})
+}
+
+# Storage permissions
+resource "azurerm_role_assignment" "sa_model_data_contributor_ml" {
+  principal_id         = module.ml_workspace.identity.principal_id
+  scope                = module.model_storage_account.storage_account_id
+  role_definition_name = "Storage Blob Data Contributor"
 }
