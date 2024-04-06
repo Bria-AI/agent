@@ -30,11 +30,11 @@ module "image_handler_func" {
   }
 
   function_app_application_settings = {
-    FUNCTIONS_WORKER_RUNTIME = "python"
-    queue_connection_string  = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.queue_send_connection_string.id})"
-    queue_url                = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.queue_url.id})"
-    sagemaker_endpoint         = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.ml_rest_endpoint.id})"
-    imageHandler__blobServiceUri = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.image_storage_blob_uri.id})"
+    FUNCTIONS_WORKER_RUNTIME      = "python"
+    queue_connection_string       = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.queue_send_connection_string.id})"
+    queue_url                     = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.queue_url.id})"
+    sagemaker_endpoint            = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.ml_rest_endpoint.id})"
+    imageHandler__blobServiceUri  = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.image_storage_blob_uri.id})"
     imageHandler__queueServiceUri = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.image_storage_queue_uri.id})"
   }
 
