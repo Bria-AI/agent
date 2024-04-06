@@ -33,7 +33,9 @@ module "image_handler_func" {
     FUNCTIONS_WORKER_RUNTIME = "python"
     queue_connection_string  = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.queue_send_connection_string.id})"
     queue_url                = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.queue_url.id})"
-    azureml_endpoint         = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.ml_rest_endpoint.id})"
+    sagemaker_endpoint         = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.ml_rest_endpoint.id})"
+    imageHandler__blobServiceUri = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.image_storage_blob_uri.id})"
+    imageHandler__queueServiceUri = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.image_storage_queue_uri.id})"
   }
 
   identity_type                = "SystemAssigned"
@@ -52,15 +54,21 @@ module "image_handler_func" {
 }
 
 # Storage permissions
-resource "azurerm_role_assignment" "sa_data_contributor_image_handler_func_image_uploader" {
+resource "azurerm_role_assignment" "image_handler_func_blob_data_contributor_on_image_uploader_storage" {
   principal_id         = module.image_handler_func.function_app_identity.principal_id
   scope                = module.image_uploader_storage_account.storage_account_id
   role_definition_name = "Storage Blob Data Contributor"
 }
 
+resource "azurerm_role_assignment" "image_handler_func_queue_data_contributor_on_image_uploader_storage" {
+  principal_id         = module.image_handler_func.function_app_identity.principal_id
+  scope                = module.image_uploader_storage_account.storage_account_id
+  role_definition_name = "Storage Queue Data Contributor"
+}
+
 # embeddings_queue_name permissions
 
-resource "azurerm_role_assignment" "sb_image_queue_contributor_image_handler_func" {
+resource "azurerm_role_assignment" "image_handler_func_sb_data_sender_on_embeddings_queue" {
   principal_id         = module.image_handler_func.function_app_identity.principal_id
   scope                = module.embeddings_queue.queues[var.embeddings_queue_name].id
   role_definition_name = "Azure Service Bus Data Sender"

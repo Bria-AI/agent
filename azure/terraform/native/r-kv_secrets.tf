@@ -1,4 +1,4 @@
-# spm
+# spn
 resource "azurerm_key_vault_secret" "spn_client_id" {
   key_vault_id = module.akv.key_vault_id
   name         = "spn-client-id"
@@ -7,7 +7,7 @@ resource "azurerm_key_vault_secret" "spn_client_id" {
   depends_on = [module.akv]
 }
 
-# longhorn credentials
+
 resource "azurerm_key_vault_secret" "spn_client_secret" {
   key_vault_id = module.akv.key_vault_id
   name         = "spn-client-secret"
@@ -43,10 +43,34 @@ resource "azurerm_key_vault_secret" "queue_send_connection_string" {
   depends_on = [module.akv]
 }
 
+# ML
 resource "azurerm_key_vault_secret" "ml_rest_endpoint" {
   key_vault_id = module.akv.key_vault_id
   name         = "ml-rest-endpoint"
   value        = jsondecode(azapi_resource.ml_online_endpoint.output).properties.scoringUri
 
+  depends_on = [module.akv]
+}
+
+# r-embeddings_dispatcher_func
+resource "azurerm_key_vault_secret" "fqdn_namespace" {
+  key_vault_id = module.akv.key_vault_id
+  name         = "${module.embeddings_queue.namespace}-fqdn"
+  value = module.embeddings_queue.namespace.endpoint
+  depends_on = [module.akv]
+}
+
+# image_handler_func
+resource "azurerm_key_vault_secret" "image_storage_blob_uri" {
+  key_vault_id = module.akv.key_vault_id
+  name         = "image-handler-blob-uri"
+  value = module.image_uploader_storage_account.storage_account_properties.primary_blob_endpoint
+  depends_on = [module.akv]
+}
+
+resource "azurerm_key_vault_secret" "image_storage_queue_uri" {
+  key_vault_id = module.akv.key_vault_id
+  name         = "image-handler-queue-uri"
+  value = module.image_uploader_storage_account.storage_account_properties.primary_queue_endpoint
   depends_on = [module.akv]
 }
