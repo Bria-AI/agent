@@ -2,7 +2,7 @@ locals {
   ml_compute_cluster_name = "bria"
   model_datastore_name    = "bria_model_blob_ds"
   ml_online_endpoint_name = join("-", [
-    "mloe",
+    "mlrte",
     var.stack,
     random_string.identifier.result,
     module.azure_region.location_short,
@@ -10,7 +10,7 @@ locals {
     random_string.ml_batch_endpoint_identifier.result
   ])
   ml_online_endpoint_deployment_name = join("-", [
-    "mloed",
+    "mlrted",
     var.stack,
     random_string.identifier.result,
     module.azure_region.location_short,
