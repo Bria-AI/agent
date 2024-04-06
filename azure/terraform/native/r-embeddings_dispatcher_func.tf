@@ -33,7 +33,8 @@ module "embeddings_dispatcher_func" {
     attribution_endpoint     = ""
     api_token                = var.bria_api_token
     model_version            = var.bria_model_version
-    queue_url                = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.queue_listen_authorization_rule.id})"
+    queue_connection_string  = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.queue_listen_connection_string.id})"
+    queue_url                = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.queue_url.id})"
   }
   identity_type                = "SystemAssigned"
   application_insights_enabled = true

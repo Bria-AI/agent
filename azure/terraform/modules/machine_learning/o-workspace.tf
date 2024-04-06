@@ -3,6 +3,11 @@ output "id" {
   description = " The ID of the Machine Learning Workspace."
 }
 
+output "name" {
+  value       = azurerm_machine_learning_workspace.workspace.name
+  description = " The Name of the Machine Learning Workspace."
+}
+
 output "discovery_url" {
   value       = azurerm_machine_learning_workspace.workspace.discovery_url
   description = " The url for the discovery service to identify regional endpoints for machine learning experimentation services."

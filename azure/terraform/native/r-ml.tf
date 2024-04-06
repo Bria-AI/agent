@@ -14,10 +14,11 @@ module "ml_workspace" {
 
   compute_cluster_map = {
     main = {
-      name        = "bria"
+      name        = local.ml_compute_cluster_name
+      custom_name = local.ml_compute_cluster_name
       vm_priority = "LowPriority"
-      vm_size     = "Standard_DS11_v2"
-      location    = "italynorth"
+      vm_size     = var.ml_vm_size
+      location    = var.ml_vm_location
 
       scale_settings = {
         min_node_count                       = 0
@@ -33,20 +34,13 @@ module "ml_workspace" {
 
   datastore_blob_storage_map = {
     model = {
-      name                       = "model"
-      custom_name                = "bria_model"
-      storage_container_id       = module.model_storage_account.storage_blob_containers[local.model_container_name].resource_manager_id
-      account_key                = module.model_storage_account.storage_account_properties.primary_access_key
+      name                       = local.model_datastore_name
+      custom_name                = local.model_datastore_name
+      storage_container_id       = module.ml_backend_storage_account.storage_blob_containers[local.model_container_name].resource_manager_id
+      account_key                = module.ml_backend_storage_account.storage_account_properties.primary_access_key
       service_data_auth_identity = "WorkspaceSystemAssignedIdentity"
     }
   }
 
-  extra_tags = merge(local.extra_tags, {})
-}
-
-# Storage permissions
-resource "azurerm_role_assignment" "sa_model_data_contributor_ml" {
-  principal_id         = module.ml_workspace.identity.principal_id
-  scope                = module.model_storage_account.storage_account_id
-  role_definition_name = "Storage Blob Data Contributor"
+  extra_tags = local.extra_tags
 }

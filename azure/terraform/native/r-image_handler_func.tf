@@ -31,8 +31,9 @@ module "image_handler_func" {
 
   function_app_application_settings = {
     FUNCTIONS_WORKER_RUNTIME = "python"
-    queue_url                = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.queue_send_authorization_rule.id})"
-    sagemaker_endpoint       = ""
+    queue_connection_string  = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.queue_send_connection_string.id})"
+    queue_url                = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.queue_url.id})"
+    azureml_endpoint         = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.ml_rest_endpoint.id})"
   }
 
   identity_type                = "SystemAssigned"

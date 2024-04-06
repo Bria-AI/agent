@@ -51,6 +51,12 @@ resource "azurerm_machine_learning_workspace" "workspace" {
     local.default_tags,
     var.extra_tags
   )
+
+  provisioner "local-exec" {
+    when        = destroy
+    interpreter = ["bash", "-c"]
+    command     = "sleep 30"
+  }
 }
 
 

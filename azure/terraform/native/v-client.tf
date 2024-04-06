@@ -21,18 +21,34 @@ variable "bria_model_version" {
 
 
 # SPN
+variable "bria_spn_tenant_id" {
+  type        = string
+  description = "The Tenant ID of the spn"
+  sensitive   = true
+}
+
 variable "bria_spn_client_id" {
   type        = string
   description = "The client ID of the multi-tenant bria spn"
   sensitive   = true
-  default     = ""
 }
 
 variable "bria_spn_client_secret" {
   type        = string
   description = "The client secret of the multi-tenant bria spn"
   sensitive   = true
-  default     = ""
+}
+
+variable "bria_model_source_storage_account_name" {
+  type        = string
+  description = "The name of bria storage account that contain the models"
+  sensitive   = true
+}
+
+variable "bria_model_source_container_name" {
+  type        = string
+  description = "The name of bria container name that contain the models"
+  sensitive   = true
 }
 
 #
@@ -76,3 +92,15 @@ variable "embeddings_queue_name" {
 #  description = "The The image tag for the image handler func"
 #  default     = "latest"
 #}
+
+# ML
+variable "ml_vm_location" {
+  type        = string
+  description = "The location to create the VM for ML model deployment"
+  default     = "italynorth"
+}
+variable "ml_vm_size" {
+  type        = string
+  description = "The size to create the VM for ML model deployment"
+  default     = "Standard_D2as_v4"
+}
