@@ -47,7 +47,7 @@ resource "azurerm_key_vault_secret" "queue_send_connection_string" {
 resource "azurerm_key_vault_secret" "ml_rest_endpoint" {
   key_vault_id = module.akv.key_vault_id
   name         = "ml-rest-endpoint"
-  value        = jsondecode(azapi_resource.ml_online_endpoint.output).properties.s
+  value        = jsondecode(azapi_resource.ml_online_endpoint.output).properties.scoringUri
 
   depends_on = [module.akv]
 }
