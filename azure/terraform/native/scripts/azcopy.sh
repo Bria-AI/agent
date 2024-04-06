@@ -57,8 +57,8 @@ copy_blobs() {
     # Set the source and destination endpoints
     SOURCE_ENDPOINT="https://${SOURCE_STORAGE_ACCOUNT_NAME}.blob.core.windows.net/${SRC_CONTAINER_NAME}"
     DESTINATION_ENDPOINT="https://${DESTINATION_STORAGE_ACCOUNT_NAME}.blob.core.windows.net/${DESTINATION_CONTAINER_NAME}"
-    echo "azcopy copy $SOURCE_ENDPOINT/* $DESTINATION_ENDPOINT/$SAS_TOKEN --recursive"
     azCopyCommand="azcopy copy $SOURCE_ENDPOINT/* $DESTINATION_ENDPOINT/$SAS_TOKEN --recursive"
+    echo "$azCopyCommand"
 
     # Perform the blob copy operation using azcopy
     if ! $azCopyCommand; then
