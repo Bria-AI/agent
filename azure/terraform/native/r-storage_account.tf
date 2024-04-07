@@ -62,7 +62,7 @@ module "image_uploader_storage_account" {
   location_short = module.azure_region.location_short
   stack          = var.stack
 
-  name_suffix         = "image"
+  name_suffix         = "images"
   location            = module.azure_region.location
   resource_group_name = module.rg.resource_group_name
 

@@ -26,6 +26,13 @@ resource "azurerm_key_vault_secret" "queue_listen_connection_string" {
   depends_on = [module.akv]
 }
 
+resource "azurerm_key_vault_secret" "fqdn_namespace" {
+  key_vault_id = module.akv.key_vault_id
+  name         = "sb-namespace-fqdn"
+  value        = module.embeddings_queue.namespace.endpoint
+  depends_on   = [module.akv]
+}
+
 resource "azurerm_key_vault_secret" "queue_url" {
   key_vault_id = module.akv.key_vault_id
   name         = "${var.embeddings_queue_name}-url"
@@ -44,21 +51,24 @@ resource "azurerm_key_vault_secret" "queue_send_connection_string" {
 }
 
 # ML
-resource "azurerm_key_vault_secret" "ml_rest_endpoint" {
+resource "azurerm_key_vault_secret" "azureml_rest_endpoint" {
   key_vault_id = module.akv.key_vault_id
-  name         = "ml-rest-endpoint"
+  name         = "azureml-endpoint-rest-api"
   value        = jsondecode(azapi_resource.ml_online_endpoint.output).properties.scoringUri
 
   depends_on = [module.akv]
 }
 
-# r-embeddings_dispatcher_func
-resource "azurerm_key_vault_secret" "fqdn_namespace" {
+resource "azurerm_key_vault_secret" "azureml_endpoint_name" {
   key_vault_id = module.akv.key_vault_id
-  name         = "${module.embeddings_queue.namespace}-fqdn"
-  value        = module.embeddings_queue.namespace.endpoint
-  depends_on   = [module.akv]
+  name         = "azureml-endpoint-name"
+  value        = azapi_resource.ml_online_endpoint.name
+
+  depends_on = [module.akv]
 }
+
+# r-embeddings_dispatcher_func
+
 
 # image_handler_func
 resource "azurerm_key_vault_secret" "image_storage_blob_uri" {

@@ -33,9 +33,13 @@ module "image_handler_func" {
     FUNCTIONS_WORKER_RUNTIME      = "python"
     queue_connection_string       = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.queue_send_connection_string.id})"
     queue_url                     = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.queue_url.id})"
-    sagemaker_endpoint            = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.ml_rest_endpoint.id})"
+    azureml_endpoint_name         = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.azureml_endpoint_name.id})"
+    sagemaker_endpoint            = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.azureml_rest_endpoint.id})"
     imageHandler__blobServiceUri  = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.image_storage_blob_uri.id})"
     imageHandler__queueServiceUri = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.image_storage_queue_uri.id})"
+
+    imageHandler__fullyQualifiedNamespace = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.fqdn_namespace.id})"
+    queue_name                            = module.embeddings_queue.queues[var.embeddings_queue_name].name
   }
 
   identity_type                = "SystemAssigned"
@@ -64,6 +68,19 @@ resource "azurerm_role_assignment" "image_handler_func_queue_data_contributor_on
   principal_id         = module.image_handler_func.function_app_identity.principal_id
   scope                = module.image_uploader_storage_account.storage_account_id
   role_definition_name = "Storage Queue Data Contributor"
+}
+
+# ML permissions
+resource "azurerm_role_assignment" "image_handler_func_azureml_data_scientist_on_image_uploader_storage" {
+  principal_id         = module.image_handler_func.function_app_identity.principal_id
+  scope                = module.ml_workspace.id
+  role_definition_name = "AzureML Data Scientist"
+}
+
+resource "azurerm_role_assignment" "image_handler_func_azureml_workspace_connection_secrets_reader_on_image_uploader_storage" {
+  principal_id         = module.image_handler_func.function_app_identity.principal_id
+  scope                = module.ml_workspace.id
+  role_definition_name = "Azure Machine Learning Workspace Connection Secrets Reader"
 }
 
 # embeddings_queue_name permissions
