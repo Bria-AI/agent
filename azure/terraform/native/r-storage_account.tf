@@ -77,7 +77,7 @@ module "image_uploader_storage_account" {
 
   containers = [
     {
-      name = local.embeddings_container_name
+      name = local.images_container_name
     }
   ]
 

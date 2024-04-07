@@ -30,15 +30,21 @@ module "image_handler_func" {
   }
 
   function_app_application_settings = {
-    FUNCTIONS_WORKER_RUNTIME      = "python"
-    queue_connection_string       = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.queue_send_connection_string.id})"
-    queue_url                     = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.queue_url.id})"
-    azureml_endpoint_name         = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.azureml_endpoint_name.id})"
-    sagemaker_endpoint            = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.azureml_rest_endpoint.id})"
+    #     General variables
+    FUNCTIONS_WORKER_RUNTIME = "python"
+    cloud_option             = "AZURE"
+    #     azure ML variable
+    azureml_rest_endpoint_name = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.azureml_endpoint_name.id})"
+    azureml_rest_endpoint_uri  = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.azureml_rest_endpoint.id})"
+    #     Storage Variable
     imageHandler__blobServiceUri  = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.image_storage_blob_uri.id})"
     imageHandler__queueServiceUri = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.image_storage_queue_uri.id})"
+    blob_container_name           = module.image_uploader_storage_account.storage_blob_containers[local.images_container_name].name
 
+    #     Service bus variable
     imageHandler__fullyQualifiedNamespace = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.fqdn_namespace.id})"
+    queue_connection_string               = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.queue_send_connection_string.id})"
+    queue_url                             = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.queue_url.id})"
     queue_name                            = module.embeddings_queue.queues[var.embeddings_queue_name].name
   }
 

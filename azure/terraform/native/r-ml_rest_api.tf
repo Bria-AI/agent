@@ -59,6 +59,12 @@ resource "azapi_resource" "ml_online_endpoint" {
   response_export_values = ["*"]
 }
 
+resource "terraform_data" "ml_online_endpoint_deployment_replace" {
+  input = {
+    instanceType = var.ml_vm_size
+  }
+}
+
 resource "azapi_resource" "ml_online_endpoint_deployment" {
   type      = "Microsoft.MachineLearningServices/workspaces/onlineEndpoints/deployments@${local.ml_rest_api_version}"
   name      = local.ml_online_endpoint_deployment_name
@@ -103,4 +109,9 @@ resource "azapi_resource" "ml_online_endpoint_deployment" {
     }
   })
   response_export_values = ["*"]
+  lifecycle {
+    replace_triggered_by = [
+      terraform_data.ml_online_endpoint_deployment_replace.output.instanceType
+    ]
+  }
 }

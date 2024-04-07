@@ -1,4 +1,4 @@
 locals {
-  model_container_name      = "model"
-  embeddings_container_name = "embeddings"
+  model_container_name  = "model"
+  images_container_name = "embeddings"
 }
