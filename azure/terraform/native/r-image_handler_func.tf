@@ -39,7 +39,10 @@ module "image_handler_func" {
     #     Storage Variable
     imageHandler__blobServiceUri  = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.image_storage_blob_uri.id})"
     imageHandler__queueServiceUri = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.image_storage_queue_uri.id})"
-    blob_container_name           = module.image_uploader_storage_account.storage_blob_containers[local.images_container_name].name
+    blob_path           = format("%s/%s",
+    module.image_uploader_storage_account.storage_blob_containers[local.images_container_name].name,
+    "images/*"
+    )
 
     #     Service bus variable
     imageHandler__fullyQualifiedNamespace = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.fqdn_namespace.id})"
