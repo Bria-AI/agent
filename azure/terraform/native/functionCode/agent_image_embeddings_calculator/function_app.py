@@ -13,7 +13,7 @@ queue_name = os.environ.get("queue_name")
 
 app = func.FunctionApp()
 
-@app.function_name(name="blobTrigger")
+@app.function_name(name="imageHandler")
 @app.blob_trigger(arg_name="imageBlob", path=blob_path,
                                connection="imageHandler")
 @app.service_bus_queue_output(arg_name="message",connection="imageHandler",queue_name=queue_name)
