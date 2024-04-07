@@ -27,6 +27,8 @@ module "embeddings_queue" {
         send   = true
         manage = false
       }
+
+      max_delivery_count = 1
     }
   ]
 

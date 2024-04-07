@@ -24,5 +24,6 @@ def agent_image_embeddings_calculator(imageBlob: func.InputStream, message: func
     logging.info(
         f"{pil_image}"
     )
-    message_input = f"blobName is {imageBlob.name}"
-    message.set(message_input)
+    img_embeddings = {"blobName": imageBlob.name}
+    
+    message.set(json.dumps(img_embeddings))

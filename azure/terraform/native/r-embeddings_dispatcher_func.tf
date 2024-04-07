@@ -40,7 +40,7 @@ module "embeddings_dispatcher_func" {
     #     Service bus variable
     queue_connection_string                      = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.queue_listen_connection_string.id})"
     queue_url                                    = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.queue_url.id})"
-    embeddingsDIspacher__fullyQualifiedNamespace = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.fqdn_namespace.id})"
+    embeddingsDispacher__fullyQualifiedNamespace = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.fqdn_namespace.id})"
   }
   identity_type                = "SystemAssigned"
   application_insights_enabled = true
@@ -61,7 +61,7 @@ module "embeddings_dispatcher_func" {
 # embeddings_queue_name permissions
 
 resource "azurerm_role_assignment" "embeddings_dispatcher_func_sb_data_receiver_on_embeddings_queue" {
-  principal_id         = module.image_handler_func.function_app_identity.principal_id
+  principal_id         = module.embeddings_dispatcher_func.function_app_identity.principal_id
   scope                = module.embeddings_queue.queues[var.embeddings_queue_name].id
   role_definition_name = "Azure Service Bus Data Receiver"
 }
