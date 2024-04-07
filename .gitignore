@@ -167,6 +167,7 @@ cython_debug/
 # Terraform
 # Local .terraform directories
 **/.terraform/*
+**/.terraform.lock.hcl
 
 # .tfstate files
 *.tfstate
@@ -204,3 +205,5 @@ terraform.rc
 **/.idea/*
 #  vscode
 **/.vscode/*
+**/.funcignore
+**/local.settings.json

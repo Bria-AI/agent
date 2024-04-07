@@ -29,7 +29,7 @@ resource "azurerm_key_vault_secret" "queue_listen_connection_string" {
 resource "azurerm_key_vault_secret" "fqdn_namespace" {
   key_vault_id = module.akv.key_vault_id
   name         = "sb-namespace-fqdn"
-  value        = module.embeddings_queue.namespace.endpoint
+  value        = trimsuffix(trimprefix(module.embeddings_queue.namespace.endpoint, "https://"), ":443/")
   depends_on   = [module.akv]
 }
 
