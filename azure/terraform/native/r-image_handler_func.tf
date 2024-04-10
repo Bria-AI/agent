@@ -18,7 +18,7 @@ module "image_handler_func" {
 
   function_app_site_config = {
     application_stack = {
-      python_version = "3.8"
+      python_version = "3.9"
       #      docker = {
       #        registry_url      = var.registry_url
       #        image_name        = var.image_handler_image_name
@@ -32,8 +32,12 @@ module "image_handler_func" {
   function_app_application_settings = {
     #     General variables
     FUNCTIONS_WORKER_RUNTIME = "python"
+    AzureWebJobsFeatureFlags = "EnableWorkerIndexing"
     cloud_option             = "AZURE"
     #     azure ML variable
+    azureml_workspace_name = module.ml_workspace.name
+    azureml_resource_group_name = module.rg.resource_group_name
+    azureml_subscription_id = data.azurerm_client_config.main.subscription_id
     azureml_rest_endpoint_name = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.azureml_endpoint_name.id})"
     azureml_rest_endpoint_uri  = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.azureml_rest_endpoint.id})"
     #     Storage Variable

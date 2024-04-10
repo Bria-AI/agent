@@ -17,7 +17,7 @@ module "embeddings_dispatcher_func" {
   function_app_version = 4
   function_app_site_config = {
     application_stack = {
-      python_version = "3.8"
+      python_version = "3.9"
       #      docker = {
       #        registry_url      = var.registry_url
       #        image_name        = var.embeddings_image_name
@@ -31,6 +31,7 @@ module "embeddings_dispatcher_func" {
   function_app_application_settings = {
     #     General variables
     FUNCTIONS_WORKER_RUNTIME = "python"
+    AzureWebJobsFeatureFlags = "EnableWorkerIndexing"
     cloud_option             = "AZURE"
 
     attribution_endpoint = ""

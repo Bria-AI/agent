@@ -1,3 +1,14 @@
+resource "terraform_data" "replace_ml_rest_api_object" {
+  input = {
+    instanceType = var.ml_vm_size
+  }
+}
+
+moved {
+  from = terraform_data.ml_online_endpoint_deployment_replace
+  to   = terraform_data.replace_ml_rest_api_object
+}
+
 # Create the model
 resource "azapi_resource" "ml_model" {
   type      = "Microsoft.MachineLearningServices/workspaces/models@${local.ml_rest_api_version}"
@@ -59,12 +70,6 @@ resource "azapi_resource" "ml_online_endpoint" {
   response_export_values = ["*"]
 }
 
-resource "terraform_data" "ml_online_endpoint_deployment_replace" {
-  input = {
-    instanceType = var.ml_vm_size
-  }
-}
-
 resource "azapi_resource" "ml_online_endpoint_deployment" {
   type      = "Microsoft.MachineLearningServices/workspaces/onlineEndpoints/deployments@${local.ml_rest_api_version}"
   name      = local.ml_online_endpoint_deployment_name
@@ -111,7 +116,58 @@ resource "azapi_resource" "ml_online_endpoint_deployment" {
   response_export_values = ["*"]
   lifecycle {
     replace_triggered_by = [
-      terraform_data.ml_online_endpoint_deployment_replace.output.instanceType
+      terraform_data.replace_ml_rest_api_object.output.instanceType
     ]
   }
+}
+
+resource "azapi_resource_action" "ml_online_endpoint_deployment_traffic_100" {
+  type                   = "Microsoft.MachineLearningServices/workspaces/onlineEndpoints@${local.ml_rest_api_version}"
+  resource_id            = azapi_resource.ml_online_endpoint.id
+  method = "PUT"
+
+  body = jsonencode({
+      location =  module.azure_region.location_cli
+    properties = {
+      authMode            = jsondecode(azapi_resource.ml_online_endpoint.output).properties.authMode
+      traffic = {
+        (azapi_resource.ml_online_endpoint_deployment.name) = 100
+      }
+    }
+  })
+  response_export_values = ["*"]
+
+  lifecycle {
+    replace_triggered_by = [
+      azapi_resource.ml_online_endpoint_deployment.id
+    ]
+  }
+
+  depends_on = [azapi_resource.ml_online_endpoint_deployment]
+
+}
+
+resource "azapi_resource_action" "ml_online_endpoint_deployment_traffic_0" {
+  type                   = "Microsoft.MachineLearningServices/workspaces/onlineEndpoints@${local.ml_rest_api_version}"
+  resource_id            = azapi_resource.ml_online_endpoint.id
+  method = "PUT"
+
+  body = jsonencode({
+      location =  module.azure_region.location_cli
+    properties = {
+      authMode            = jsondecode(azapi_resource.ml_online_endpoint.output).properties.authMode
+      traffic = {}
+    }
+  })
+  response_export_values = ["*"]
+
+  lifecycle {
+    replace_triggered_by = [
+      azapi_resource.ml_online_endpoint_deployment.id
+    ]
+  }
+  when = "destroy"
+
+  depends_on = [azapi_resource.ml_online_endpoint_deployment]
+
 }

@@ -17,16 +17,27 @@ from azure.ai.ml import MLClient
 from azure.identity import DefaultAzureCredential
 
 
-ml_client = MLClient(DefaultAzureCredential(), workspace_name="mlw-bria-8x1l-usc-prod", resource_group_name="rg-bria-8x1l-prod-usc", subscription_id="54560653-b65f-4c86-b3f2-3b23b2d95187")
 
 # find current file path
+subscription_id = os.environ.get("azureml_subscription_id", "54560653-b65f-4c86-b3f2-3b23b2d95187")
+resource_group_name = os.environ.get("azureml_resource_group_name", "rg-bria-8x1l-prod-usc")
+workspace_name = os.environ.get("azureml_workspace_name", "mlw-bria-8x1l-usc-prod")
+credential = DefaultAzureCredential()
+# Check if given credential can get token successfully.
+# access_token = credential.get_token("https://ml.azure.com/.default")
+ml_client = MLClient(credential, 
+                     workspace_name=workspace_name,
+                     resource_group_name=resource_group_name,
+                     subscription_id=subscription_id
+                     )
+
 models_base_path = os.path.dirname(os.path.realpath(__file__))
-endpoint_name = os.environ.get("azureml-endpoint-name", "mlrte-bria-8x1l-usc-prod-x18v")
+endpoint_name = os.environ.get("azureml_endpoint_name", "mlrte-bria-8x1l-usc-prod-x18v")
 
 endpoint = ml_client.online_endpoints.get(endpoint_name)
 scoring_uri = endpoint.scoring_uri
 
-keys = ml_client.online_endpoints.list_keys(endpoint_name)
+keys = ml_client.online_endpoints.get_keys(endpoint_name)
 auth_key = keys.primary_key
 
 url = scoring_uri[8:]
@@ -39,8 +50,6 @@ triton_client = httpclient.InferenceServerClient(
 
 headers = {}
 headers["Authorization"] = f"Bearer {auth_key}"
-
-
 
 
 class CLIPModel(Enum):
@@ -69,13 +78,15 @@ class CLIPEmbedder:
             )
 
     def run_on_image(
-        self,
-        image: ImageType,
-        model=CLIPModel.clip_32.value,
-        normalize: bool = False,
+            self,
+            image: ImageType,
+            model=CLIPModel.clip_32.value,
+            normalize: bool = False,
     ):
         """Run inference on a image
         Args:
+            normalize:
+            model:
             image (ImageType): pil image to be embedded
         Returns:
             np.array: outputs an embedding array
@@ -97,7 +108,7 @@ class CLIPEmbedder:
 
     @staticmethod
     def sagemaker_inference(
-        inputs, model_name, model_version="1", dtype="FP32"
+            inputs, model_name, model_version="1", dtype="FP32"
     ) -> Union[np.ndarray, None]:
         inputs_ = []
         for i, image_pixels in enumerate(inputs):
@@ -116,23 +127,18 @@ class CLIPEmbedder:
         ) = httpclient.InferenceServerClient.generate_request_body(
             inputs_, outputs=outputs
         )
+        # health_ctx = triton_client.is_server_ready(headers=headers)
+        # print("Is server ready - {}".format(health_ctx))
+
+        # status_ctx = triton_client.is_model_ready(model_name, "1", headers)
+        # print("Is model ready - {}".format(status_ctx))
 
         t = time.time()
         print(f"Sending request to {model_name}...")
-        response = triton_client.infer(model_name, inputs, outputs=outputs, headers=headers)
+        response = triton_client.infer(model_name, inputs_, outputs=outputs, headers=headers)
 
         print({f"{model_name}_infer": time.time() - t})
-
-        header_length_prefix = (
-            "application/vnd.sagemaker-triton.binary+json;json-header-size="
-        )
-        header_length_str = response["ContentType"][len(header_length_prefix) :]
-        # Read response body
-        result = httpclient.InferenceServerClient.parse_response_body(
-            response["Body"].read(), header_length=int(header_length_str)
-        )
-        if result is not None:
-            return result.as_numpy(output_name)
+        return response.as_numpy(output_name)
 
     @staticmethod
     def norm_embedding(embedding):
@@ -141,7 +147,7 @@ class CLIPEmbedder:
 
 if __name__ == "__main__":
     image = Image.open(
-        "/home/azureuser/spring/bp-logo-color-3oclock.png"
+        "/home/or/Pictures/dog.jpeg"
     )
     clip_pipeline = CLIPEmbedder()
     t = clip_pipeline.run_on_image(image)

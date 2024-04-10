@@ -28,7 +28,7 @@ module "embeddings_queue" {
         manage = false
       }
 
-      max_delivery_count = 1
+      max_delivery_count = 3
     }
   ]
 
