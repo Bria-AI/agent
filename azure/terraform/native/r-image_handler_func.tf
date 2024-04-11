@@ -35,7 +35,7 @@ module "image_handler_func" {
     AzureWebJobsFeatureFlags = "EnableWorkerIndexing"
     cloud_option             = "AZURE"
     #     azure ML variable
-Fix    azureml_workspace_name      = module.ml_workspace.name
+    azureml_workspace_name      = module.ml_workspace.name
     azureml_resource_group_name = module.rg.resource_group_name
     azureml_subscription_id     = data.azurerm_client_config.main.subscription_id
     azureml_rest_endpoint_name  = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.azureml_endpoint_name.id)
