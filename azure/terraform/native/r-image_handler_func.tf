@@ -35,14 +35,14 @@ module "image_handler_func" {
     AzureWebJobsFeatureFlags = "EnableWorkerIndexing"
     cloud_option             = "AZURE"
     #     azure ML variable
-    azureml_workspace_name = module.ml_workspace.name
+Fix    azureml_workspace_name      = module.ml_workspace.name
     azureml_resource_group_name = module.rg.resource_group_name
-    azureml_subscription_id = data.azurerm_client_config.main.subscription_id
-    azureml_rest_endpoint_name = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.azureml_endpoint_name.id})"
-    azureml_rest_endpoint_uri  = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.azureml_rest_endpoint.id})"
+    azureml_subscription_id     = data.azurerm_client_config.main.subscription_id
+    azureml_rest_endpoint_name  = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.azureml_endpoint_name.id)
+    azureml_rest_endpoint_uri   = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.azureml_rest_endpoint.id)
     #     Storage Variable
-    imageHandler__blobServiceUri  = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.image_storage_blob_uri.id})"
-    imageHandler__queueServiceUri = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.image_storage_queue_uri.id})"
+    imageHandler__blobServiceUri  = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.image_storage_blob_uri.id)
+    imageHandler__queueServiceUri = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.image_storage_queue_uri.id)
     blob_path = format("%s/%s",
       module.image_uploader_storage_account.storage_blob_containers[local.images_container_name].name,
       "images/*"

@@ -16,6 +16,15 @@ resource "azurerm_key_vault_secret" "spn_client_secret" {
   depends_on = [module.akv]
 }
 
+# Bria
+resource "azurerm_key_vault_secret" "api_token" {
+  key_vault_id = module.akv.key_vault_id
+  name         = "api-token"
+  value        = var.bria_api_token
+
+  depends_on = [module.akv]
+}
+
 # queue
 
 resource "azurerm_key_vault_secret" "queue_listen_connection_string" {

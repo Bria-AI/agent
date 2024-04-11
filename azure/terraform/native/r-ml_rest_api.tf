@@ -122,14 +122,14 @@ resource "azapi_resource" "ml_online_endpoint_deployment" {
 }
 
 resource "azapi_resource_action" "ml_online_endpoint_deployment_traffic_100" {
-  type                   = "Microsoft.MachineLearningServices/workspaces/onlineEndpoints@${local.ml_rest_api_version}"
-  resource_id            = azapi_resource.ml_online_endpoint.id
-  method = "PUT"
+  type        = "Microsoft.MachineLearningServices/workspaces/onlineEndpoints@${local.ml_rest_api_version}"
+  resource_id = azapi_resource.ml_online_endpoint.id
+  method      = "PUT"
 
   body = jsonencode({
-      location =  module.azure_region.location_cli
+    location = module.azure_region.location_cli
     properties = {
-      authMode            = jsondecode(azapi_resource.ml_online_endpoint.output).properties.authMode
+      authMode = jsondecode(azapi_resource.ml_online_endpoint.output).properties.authMode
       traffic = {
         (azapi_resource.ml_online_endpoint_deployment.name) = 100
       }
@@ -148,15 +148,15 @@ resource "azapi_resource_action" "ml_online_endpoint_deployment_traffic_100" {
 }
 
 resource "azapi_resource_action" "ml_online_endpoint_deployment_traffic_0" {
-  type                   = "Microsoft.MachineLearningServices/workspaces/onlineEndpoints@${local.ml_rest_api_version}"
-  resource_id            = azapi_resource.ml_online_endpoint.id
-  method = "PUT"
+  type        = "Microsoft.MachineLearningServices/workspaces/onlineEndpoints@${local.ml_rest_api_version}"
+  resource_id = azapi_resource.ml_online_endpoint.id
+  method      = "PUT"
 
   body = jsonencode({
-      location =  module.azure_region.location_cli
+    location = module.azure_region.location_cli
     properties = {
-      authMode            = jsondecode(azapi_resource.ml_online_endpoint.output).properties.authMode
-      traffic = {}
+      authMode = jsondecode(azapi_resource.ml_online_endpoint.output).properties.authMode
+      traffic  = {}
     }
   })
   response_export_values = ["*"]

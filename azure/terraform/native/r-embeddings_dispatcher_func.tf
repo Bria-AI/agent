@@ -35,13 +35,13 @@ module "embeddings_dispatcher_func" {
     cloud_option             = "AZURE"
 
     attribution_endpoint = ""
-    api_token            = var.bria_api_token
+    api_token            = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.api_token.id)
     model_version        = var.bria_model_version
 
     #     Service bus variable
-    queue_connection_string                      = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.queue_listen_connection_string.id})"
-    queue_url                                    = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.queue_url.id})"
-    embeddingsDispacher__fullyQualifiedNamespace = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.fqdn_namespace.id})"
+    queue_connection_string                      = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.queue_listen_connection_string.id)
+    queue_url                                    = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.queue_url.id)
+    embeddingsDispacher__fullyQualifiedNamespace = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.fqdn_namespace.id)
   }
   identity_type                = "SystemAssigned"
   application_insights_enabled = true
