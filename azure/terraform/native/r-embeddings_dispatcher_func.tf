@@ -43,6 +43,7 @@ module "embeddings_dispatcher_func" {
     #     Service bus variable
     queue_connection_string                      = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.queue_listen_connection_string.id)
     queue_url                                    = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.queue_url.id)
+    queue_name =  module.embeddings_queue.queues[var.embeddings_queue_name].name
     embeddingsDispatcher__fullyQualifiedNamespace = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.fqdn_namespace.id)
   }
   identity_type                = "SystemAssigned"

@@ -13,7 +13,7 @@ module "image_handler_func" {
   name_suffix = "image-creation-handler"
 
   service_plan_custom_name = "plan-image-handler-func"
-  storage_account_custom_name = "saimagefunc${random_string.identifier.result}"
+#   storage_account_custom_name = "saimagefunc${random_string.identifier.result}"
   os_type                  = "Linux"
   function_app_version     = 4
 
@@ -64,7 +64,7 @@ module "image_handler_func" {
 
 #   storage_account_network_rules_enabled = false
 #   application_zip_package_path = abspath("/or/clients/Bria/projects/agent-functions/azure/functionCode/agent_image_embeddings_calculator.zip")
-  sku_name = "EP1"
+#   sku_name = "EP1"
 
   logs_destinations_ids = [
     module.logs.log_analytics_workspace_id
