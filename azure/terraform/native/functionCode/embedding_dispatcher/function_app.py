@@ -6,23 +6,22 @@ import sentry_sdk
 import azure.functions as func
 import logging
 
-
-
-
 sentry_sdk.init(
     dsn="https://8a85874d4f547148fd2f7b7f9caf2f93@o417868.ingest.sentry.io/4505900165627904"
 )
 # Set up the endpoint name from environment variables
 model_version = os.environ.get("model_version", "2.3")
-attribution_endpoint = os.environ.get("attribution_endpoint", "https://lx5eculobj.execute-api.us-east-1.amazonaws.com/v1/bria-agent-attribution")
+attribution_endpoint = os.environ.get("attribution_endpoint",
+                                      "https://lx5eculobj.execute-api.us-east-1.amazonaws.com/v1/bria-agent-attribution")
 api_token = os.environ.get("api_token")
 queue_name = os.environ.get("queue_name")
 
 app = func.FunctionApp()
 
+
 @app.function_name(name="embedding_dispatcher")
 @app.service_bus_queue_trigger(arg_name="message", queue_name=queue_name,
-                               connection="embeddingsDispacher") 
+                               connection="embeddingsDispatcher")
 def embedding_dispatcher(message: func.ServiceBusMessage):
     try:
         file_json_data = json.loads(message.get_body().decode('utf-8'))
@@ -35,7 +34,7 @@ def embedding_dispatcher(message: func.ServiceBusMessage):
         }
 
         if attribution_endpoint:
-            response = requests.post(attribution_endpoint, json=request_body)   
+            response = requests.post(attribution_endpoint, json=request_body)
             if json.loads(response.content).get("statusCode") != 200:
                 raise Exception(f"API request failed with status code {response.status_code}: {response.text}")
             else:
