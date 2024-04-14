@@ -6,7 +6,6 @@ from servicebus.sender import sender
 import os
 import io
 import sentry_sdk
-from sentry_sdk.integrations.serverless import serverless_function
 
 
 sentry_sdk.init(
@@ -25,13 +24,16 @@ app = func.FunctionApp()
 @app.blob_trigger(arg_name="imageBlob", path=blob_path,
                   connection="imageHandler")
 def agent_image_embeddings_calculator(imageBlob: func.InputStream):
+    try:
+        image_bytes = imageBlob.read()
+        pil_image = Image.open(io.BytesIO(image_bytes))
+        clip_pipeline = CLIPEmbedder()
+        img_embeddings = [clip_pipeline.run_on_image(pil_image)]
 
-    image_bytes = imageBlob.read()
-    pil_image = Image.open(io.BytesIO(image_bytes))
-    clip_pipeline = CLIPEmbedder()
-    img_embeddings = [clip_pipeline.run_on_image(pil_image)]
-
-    sender(servicebus_namenpace_fqdn=sb_ns_fqdn,
-           queue_name=queue_name,
-           img_embeddings=img_embeddings
-           )
+        sender(servicebus_namenpace_fqdn=sb_ns_fqdn,
+            queue_name=queue_name,
+            img_embeddings=img_embeddings
+            )
+    except Exception as e:
+        sentry_sdk.capture_exception(e)
+        raise

@@ -3,7 +3,6 @@ import os
 import requests
 import uuid
 import sentry_sdk
-from sentry_sdk.integrations.serverless import serverless_function
 import azure.functions as func
 import logging
 
@@ -16,7 +15,7 @@ sentry_sdk.init(
 # Set up the endpoint name from environment variables
 model_version = os.environ.get("model_version", "2.3")
 attribution_endpoint = os.environ.get("attribution_endpoint", "https://lx5eculobj.execute-api.us-east-1.amazonaws.com/v1/bria-agent-attribution")
-api_token = os.environ.get("api_token","a10d6386dd6a11ebba800242ac130004")
+api_token = os.environ.get("api_token")
 queue_name = os.environ.get("queue_name")
 
 app = func.FunctionApp()
@@ -42,6 +41,6 @@ def embedding_dispatcher(message: func.ServiceBusMessage):
             else:
                 print(f"Request body: {request_body}")
     except Exception as ex:
-        # sentry_sdk.capture_exception(ex)
+        sentry_sdk.capture_exception(ex)
         logging.info(f"Error processing record: {ex}")
         raise

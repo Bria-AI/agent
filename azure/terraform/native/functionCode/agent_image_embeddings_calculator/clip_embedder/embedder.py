@@ -19,9 +19,9 @@ from azure.identity import DefaultAzureCredential
 
 
 # find current file path
-subscription_id = os.environ.get("azureml_subscription_id", "54560653-b65f-4c86-b3f2-3b23b2d95187")
-resource_group_name = os.environ.get("azureml_resource_group_name", "rg-bria-8x1l-prod-usc")
-workspace_name = os.environ.get("azureml_workspace_name", "mlw-bria-8x1l-usc-prod")
+subscription_id = os.environ.get("azureml_subscription_id")
+resource_group_name = os.environ.get("azureml_resource_group_name")
+workspace_name = os.environ.get("azureml_workspace_name")
 credential = DefaultAzureCredential()
 # Check if given credential can get token successfully.
 # access_token = credential.get_token("https://ml.azure.com/.default")
@@ -32,7 +32,7 @@ ml_client = MLClient(credential,
                      )
 
 models_base_path = os.path.dirname(os.path.realpath(__file__))
-endpoint_name = os.environ.get("azureml_endpoint_name", "mlrte-bria-8x1l-usc-prod-x18v")
+endpoint_name = os.environ.get("azureml_endpoint_name")
 
 endpoint = ml_client.online_endpoints.get(endpoint_name)
 scoring_uri = endpoint.scoring_uri
