@@ -10,8 +10,10 @@ module "embeddings_dispatcher_func" {
   location_short      = module.azure_region.location_short
   resource_group_name = module.rg.resource_group_name
 
-  name_suffix              = "embeddings-dispatcher"
+  name_suffix              = "embeddings"
   service_plan_custom_name = "plan-embeddings-dispatcher-func"
+
+#     storage_account_custom_name = "saembeddingsfunc${random_string.identifier.result}"
 
   os_type              = "Linux"
   function_app_version = 4
@@ -41,7 +43,7 @@ module "embeddings_dispatcher_func" {
     #     Service bus variable
     queue_connection_string                      = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.queue_listen_connection_string.id)
     queue_url                                    = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.queue_url.id)
-    embeddingsDispacher__fullyQualifiedNamespace = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.fqdn_namespace.id)
+    embeddingsDispatcher__fullyQualifiedNamespace = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.fqdn_namespace.id)
   }
   identity_type                = "SystemAssigned"
   application_insights_enabled = true
@@ -49,6 +51,8 @@ module "embeddings_dispatcher_func" {
   use_existing_storage_account = true
   storage_account_id           = module.logs.logs_storage_account_id
 
+#   storage_account_network_rules_enabled = false
+#   application_zip_package_path = abspath("/or/clients/Bria/projects/agent-functions/azure/functionCode/embedding_dispatcher.zip")
 
   logs_destinations_ids = [
     module.logs.log_analytics_workspace_id

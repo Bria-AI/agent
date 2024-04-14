@@ -13,6 +13,7 @@ module "image_handler_func" {
   name_suffix = "image-creation-handler"
 
   service_plan_custom_name = "plan-image-handler-func"
+  storage_account_custom_name = "saimagefunc${random_string.identifier.result}"
   os_type                  = "Linux"
   function_app_version     = 4
 
@@ -38,14 +39,14 @@ module "image_handler_func" {
     azureml_workspace_name      = module.ml_workspace.name
     azureml_resource_group_name = module.rg.resource_group_name
     azureml_subscription_id     = data.azurerm_client_config.main.subscription_id
-    azureml_rest_endpoint_name  = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.azureml_endpoint_name.id)
+    azureml_endpoint_name  = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.azureml_endpoint_name.id)
     azureml_rest_endpoint_uri   = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.azureml_rest_endpoint.id)
     #     Storage Variable
     imageHandler__blobServiceUri  = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.image_storage_blob_uri.id)
     imageHandler__queueServiceUri = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.image_storage_queue_uri.id)
     blob_path = format("%s/%s",
       module.image_uploader_storage_account.storage_blob_containers[local.images_container_name].name,
-      "images/*"
+      "images/{filename}"
     )
 
     #     Service bus variable
@@ -60,6 +61,10 @@ module "image_handler_func" {
 
   use_existing_storage_account = true
   storage_account_id           = module.logs.logs_storage_account_id
+
+#   storage_account_network_rules_enabled = false
+#   application_zip_package_path = abspath("/or/clients/Bria/projects/agent-functions/azure/functionCode/agent_image_embeddings_calculator.zip")
+  sku_name = "EP1"
 
   logs_destinations_ids = [
     module.logs.log_analytics_workspace_id
