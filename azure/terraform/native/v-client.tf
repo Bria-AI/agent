@@ -51,6 +51,29 @@ variable "bria_model_source_container_name" {
   sensitive   = true
 }
 
+variable "bria_function_app_git_url" {
+  type        = string
+  description = "The function app git url"
+  sensitive   = true
+  default     = "https://github.com/Bria-AI/agent-functions.git"
+}
+
+variable "bria_image_function_app_path" {
+  type        = string
+  description = "The  image function app path"
+  sensitive   = true
+  default     = "azure/functionCode/agent_image_embeddings_calculator"
+}
+
+variable "bria_embedder_function_app_path" {
+  type        = string
+  description = "The  image function app path"
+  sensitive   = true
+  default     = "azure/functionCode/embedding_dispatcher"
+}
+
+
+
 #
 # Queue
 #

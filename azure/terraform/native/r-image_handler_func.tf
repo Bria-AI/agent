@@ -13,33 +13,26 @@ module "image_handler_func" {
   name_suffix = "image-creation-handler"
 
   service_plan_custom_name = "plan-image-handler-func"
-#   storage_account_custom_name = "saimagefunc${random_string.identifier.result}"
   os_type                  = "Linux"
   function_app_version     = 4
 
   function_app_site_config = {
     application_stack = {
       python_version = "3.9"
-      #      docker = {
-      #        registry_url      = var.registry_url
-      #        image_name        = var.image_handler_image_name
-      #        image_tag         = var.image_handler_image_tag
-      #        registry_username = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.spn_client_id.id})"
-      #        registry_password = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.spn_client_secret.id})"
-      #      }
     }
   }
 
   function_app_application_settings = {
     #     General variables
-    FUNCTIONS_WORKER_RUNTIME = "python"
-    AzureWebJobsFeatureFlags = "EnableWorkerIndexing"
-    cloud_option             = "AZURE"
+    FUNCTIONS_WORKER_RUNTIME       = "python"
+    SCM_DO_BUILD_DURING_DEPLOYMENT = true
+    AzureWebJobsFeatureFlags       = "EnableWorkerIndexing"
+    cloud_option                   = "AZURE"
     #     azure ML variable
     azureml_workspace_name      = module.ml_workspace.name
     azureml_resource_group_name = module.rg.resource_group_name
     azureml_subscription_id     = data.azurerm_client_config.main.subscription_id
-    azureml_endpoint_name  = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.azureml_endpoint_name.id)
+    azureml_endpoint_name       = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.azureml_endpoint_name.id)
     azureml_rest_endpoint_uri   = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.azureml_rest_endpoint.id)
     #     Storage Variable
     imageHandler__blobServiceUri  = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.image_storage_blob_uri.id)
@@ -61,10 +54,6 @@ module "image_handler_func" {
 
   use_existing_storage_account = true
   storage_account_id           = module.logs.logs_storage_account_id
-
-#   storage_account_network_rules_enabled = false
-#   application_zip_package_path = abspath("/or/clients/Bria/projects/agent-functions/azure/functionCode/agent_image_embeddings_calculator.zip")
-#   sku_name = "EP1"
 
   logs_destinations_ids = [
     module.logs.log_analytics_workspace_id

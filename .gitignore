@@ -205,5 +205,4 @@ terraform.rc
 **/.idea/*
 #  vscode
 **/.vscode/*
-**/.funcignore
 **/local.settings.json
