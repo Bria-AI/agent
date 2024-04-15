@@ -39,7 +39,7 @@ module "image_handler_func" {
     imageHandler__queueServiceUri = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.image_storage_queue_uri.id)
     blob_path = format("%s/%s",
       module.image_uploader_storage_account.storage_blob_containers[local.images_container_name].name,
-      "images/{filename}"
+      "{filename}"
     )
 
     #     Service bus variable
