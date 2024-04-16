@@ -2,13 +2,22 @@
 
 # Function to install azcopy if not already installed
 install_azcopy() {
-    if ! command -v azcopy &>/dev/null; then
+    if ! command -v /tmp/azcopy &>/dev/null; then
         echo "azcopy is not installed. Installing..."
-        wget -O azcopy.tar.gz https://aka.ms/downloadazcopy-v10-linux
-        tar -xvf azcopy.tar.gz --strip-components=1 --wildcards '*/azcopy'
-        chmod +x azcopy
-        sudo mv azcopy /usr/local/bin/
-        rm azcopy.tar.gz
+        if [[ $(uname) == "Darwin" ]]; then
+            AZCOPY_DOWNLOAD_URL="https://aka.ms/downloadazcopy-v10-mac"
+        elif [[ $(uname) == "Linux" ]]; then
+            AZCOPY_DOWNLOAD_URL="https://aka.ms/downloadazcopy-v10-linux"
+
+        else
+            echo "Unsupported operating system."
+            exit 1
+        fi
+            wget -O azcopy.tar.gz "$AZCOPY_DOWNLOAD_URL"
+            tar -xvf azcopy.tar.gz --strip-components=1 --wildcards '*/azcopy'
+            chmod +x azcopy
+            sudo mv azcopy /tmp/
+            rm azcopy.tar.gz
     fi
 }
 
@@ -24,8 +33,8 @@ handle_error() {
     local error_message=$1
     echo "Error: $error_message"
     # Remove azcopy if it was installed during the script execution
-    if command -v azcopy &>/dev/null; then
-        sudo rm /usr/local/bin/azcopy
+    if command -v /tmp/azcopy &>/dev/null; then
+        sudo rm -fr /tmp/azcopy
     fi
     exit 1
 }
@@ -42,22 +51,17 @@ copy_blobs() {
     local SRC_CONTAINER_NAME=$8
     local DESTINATION_CONTAINER_NAME=$9
 
-#    random=$RANDOM
-#    mkdir -p /tmp/$random/az_profile
-#    export AZURE_CONFIG_DIR=/tmp/$random/az_profile
-#    echo $AZURE_CONFIG_DIR
     export AZCOPY_SPA_CLIENT_SECRET="$SPN_PASSWORD"
 
-
     # Login to the Azure account using service principal
-    if ! azcopy login --service-principal --application-id "$SPN_CLIENT_ID" --tenant-id "$TENANT_ID"; then
+    if ! /tmp/azcopy login --service-principal --application-id "$SPN_CLIENT_ID" --tenant-id "$TENANT_ID"; then
         handle_error "Azure login failed. Please check your credentials."
     fi
 
     # Set the source and destination endpoints
     SOURCE_ENDPOINT="https://${SOURCE_STORAGE_ACCOUNT_NAME}.blob.core.windows.net/${SRC_CONTAINER_NAME}"
     DESTINATION_ENDPOINT="https://${DESTINATION_STORAGE_ACCOUNT_NAME}.blob.core.windows.net/${DESTINATION_CONTAINER_NAME}"
-    azCopyCommand="azcopy copy $SOURCE_ENDPOINT/* $DESTINATION_ENDPOINT/$SAS_TOKEN --recursive"
+    azCopyCommand="/tmp/azcopy copy $SOURCE_ENDPOINT/* $DESTINATION_ENDPOINT/$SAS_TOKEN --recursive"
     echo "$azCopyCommand"
 
     # Perform the blob copy operation using azcopy
@@ -66,8 +70,7 @@ copy_blobs() {
     fi
 
     # Logout from Azure account
-    azcopy logout
-#    unset AZURE_CONFIG_DIR
+    /tmp/azcopy logout
     unset AZCOPY_SPA_CLIENT_SECRET
 }
 
@@ -118,5 +121,5 @@ copy_blobs "$SPN_CLIENT_ID" "$SPN_PASSWORD" "$TENANT_ID" "$SUBSCRIPTION_ID" "$SA
 
 # Remove azcopy if it was installed during the script execution
 if command -v azcopy &>/dev/null; then
-    sudo rm /usr/local/bin/azcopy
+    sudo rm -fr /tmp/azcopy
 fi

@@ -2,14 +2,17 @@
 
 # Function to install azcopy if not already installed
 install_packages() {
-    sudo apt update -y
     if ! command -v git &>/dev/null; then
         echo "git is not installed. Installing..."
-        sudo apt install git -y
-    fi
-    if ! command -v zip &>/dev/null; then
-        echo "zip is not installed. Installing..."
-        sudo apt install zip -y
+        if [[ $(uname) == "Darwin" ]]; then
+            brew install git
+        elif [[ $(uname) == "Linux" ]]; then
+            sudo apt update -y
+            sudo apt install git -y
+        else
+            echo "Unsupported operating system."
+            exit 1
+        fi
     fi
 }
 
@@ -39,7 +42,7 @@ git_clone() {
     gitCloneCommand="git clone $GIT_URL $DESTINATION"
     echo "$gitCloneCommand"
 
-    # Perform the blob copy operation using azcopy
+    # Perform the blob copy operation using git
     if ! $gitCloneCommand; then
         handle_error "Git clone failed"
     fi
@@ -67,7 +70,7 @@ if [[ -z $GIT_URL || -z $DESTINATION ]]; then
     handle_error "Missing required parameters."
 fi
 
-# Install azcopy
+# Install git if needed
 install_packages
 
 # Copy blobs

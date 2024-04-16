@@ -1,5 +1,6 @@
 resource "terraform_data" "git_clone" {
   triggers_replace = [
+    timestamp()
   ]
   input = {
     scriptName  = "${path.module}/scripts/gitClone.sh"
@@ -21,17 +22,21 @@ data "archive_file" "image_handler" {
   output_path = "/tmp/imageHandler.zip"
   type        = "zip"
   source_dir  = join("/", [terraform_data.git_clone.output.DESTINATION, var.bria_image_function_app_path])
+
+  depends_on = [terraform_data.git_clone]
 }
 
 data "archive_file" "embedder_handler" {
   output_path = "/tmp/embedderDispatcher.zip"
   type        = "zip"
   source_dir  = join("/", [terraform_data.git_clone.output.DESTINATION, var.bria_embedder_function_app_path])
+
+  depends_on = [terraform_data.git_clone]
 }
 
 resource "terraform_data" "image_handler_deploy" {
   triggers_replace = [
-    data.archive_file.image_handler.output_sha
+    data.archive_file.image_handler.output_md5
   ]
   input = {
     scriptName          = "${path.module}/scripts/functionDeploy.sh"
@@ -53,7 +58,7 @@ resource "terraform_data" "image_handler_deploy" {
 
 resource "terraform_data" "embedder_dispatcher_deploy" {
   triggers_replace = [
-    data.archive_file.embedder_handler.output_sha
+    data.archive_file.image_handler.output_md5
   ]
   input = {
     scriptName          = "${path.module}/scripts/functionDeploy.sh"
