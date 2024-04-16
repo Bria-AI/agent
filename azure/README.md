@@ -24,7 +24,7 @@ az account set --subscription sub_id
 2. Navigate to `agent` repository in the terminal.
 3. (Optional) Setup Terraform remote state:
 
-By default, Terraform will use a local state file to store the Terraform state, but when working in a team with multiple people, it's recommended to setup remote state for Terraform. You can learn more about this [here](https://developer.hashicorp.com/terraform/language/settings/backends/azurerm). We recommend that you create a file `backend.tf` in the directories listed below (`azure/terraform/native` or `azure/terraform/jumpstart`) and fill in the information according to this example:
+By default, Terraform will use a local state file to store the Terraform state, but when working in a team with multiple people, it's recommended to setup remote state for Terraform. You can learn more about this [here](https://developer.hashicorp.com/terraform/language/settings/backends/azurerm). We recommend that you create a file `backend.tf` in the directort listed below (`azure/terraform/native`) and fill in the information according to this example:
 
 ```
 terraform {
@@ -57,8 +57,6 @@ ml_vm_size                             = ""
 ```
 5. Confirm with `yes` after reviewing the Terraform plan
 
-#### Azure Jump Start
-TBD
 ## Testing
 TBD
 ## FAQ
