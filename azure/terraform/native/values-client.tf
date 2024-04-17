@@ -4,18 +4,17 @@
 variable "bria_api_token" {
   type        = string
   description = "Token to access the Bria API."
-  sensitive   = true
-  default     = ""
+  sensitive   = false
 }
 
 variable "bria_model_version" {
   type        = string
   description = "Bria model version"
-  default     = "2.0"
+  default     = "2.3"
 
   validation {
-    condition     = contains(["1.4", "2.0"], var.bria_model_version)
-    error_message = "The model_version must be either '1.4' or '2.0'."
+    condition     = contains(["2.2", "2.3"], var.bria_model_version)
+    error_message = "The model_version must be either '2.2' or '2.3'."
   }
 }
 
@@ -23,32 +22,32 @@ variable "bria_model_version" {
 # SPN
 variable "bria_spn_tenant_id" {
   type        = string
-  description = "The Tenant ID of the spn"
-  sensitive   = true
+  description = "Tenant ID (provided by Bria) for multi-tenant spn authenticatio"
+  sensitive   = false
 }
 
 variable "bria_spn_client_id" {
   type        = string
-  description = "The client ID of the multi-tenant bria spn"
-  sensitive   = true
+  description = "Client ID (provided by Bria) for multi-tenant spn authentication"
+  sensitive   = false
 }
 
 variable "bria_spn_client_secret" {
   type        = string
-  description = "The client secret of the multi-tenant bria spn"
-  sensitive   = true
+  description = "Client secret (provided by Bria) for multi-tenant spn authentication"
+  sensitive   = false
 }
 
 variable "bria_model_source_storage_account_name" {
   type        = string
-  description = "The name of bria storage account that contain the models"
-  sensitive   = true
+  description = "Bria storage account (provided by Bria)"
+  sensitive   = false
 }
 
 variable "bria_model_source_container_name" {
   type        = string
-  description = "The name of bria container name that contain the models"
-  sensitive   = true
+  description = "Bria container name (provided by Bria)"
+  sensitive   = false
 }
 
 variable "bria_function_app_git_url" {
