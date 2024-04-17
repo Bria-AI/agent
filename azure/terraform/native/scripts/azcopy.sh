@@ -13,10 +13,10 @@ install_azcopy() {
             echo "Unsupported operating system."
             exit 1
         fi
-            wget -O azcopy.tar.gz "$AZCOPY_DOWNLOAD_URL"
+            curl -L -o azcopy.tar.gz "$AZCOPY_DOWNLOAD_URL"
             tar -xvf azcopy.tar.gz --strip-components=1 --wildcards '*/azcopy'
             chmod +x azcopy
-            sudo mv azcopy /tmp/
+            mv azcopy /tmp/
             rm azcopy.tar.gz
     fi
 }
