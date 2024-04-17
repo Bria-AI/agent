@@ -10,7 +10,7 @@ module "embeddings_dispatcher_func" {
   location_short      = module.azure_region.location_short
   resource_group_name = module.rg.resource_group_name
 
-  name_suffix              = "embeddings"
+  name_suffix              = "embeddings-dispatcher"
   service_plan_custom_name = "plan-embeddings-dispatcher-func"
 
   os_type              = "Linux"
@@ -33,8 +33,6 @@ module "embeddings_dispatcher_func" {
     model_version        = var.bria_model_version
 
     #     Service bus variable
-    queue_connection_string                       = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.queue_listen_connection_string.id)
-    queue_url                                     = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.queue_url.id)
     queue_name                                    = module.embeddings_queue.queues[var.embeddings_queue_name].name
     embeddingsDispatcher__fullyQualifiedNamespace = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.fqdn_namespace.id)
   }

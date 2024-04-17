@@ -44,8 +44,6 @@ module "image_handler_func" {
 
     #     Service bus variable
     imageHandler__fullyQualifiedNamespace = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.fqdn_namespace.id})"
-    queue_connection_string               = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.queue_send_connection_string.id})"
-    queue_url                             = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.queue_url.id})"
     queue_name                            = module.embeddings_queue.queues[var.embeddings_queue_name].name
   }
 

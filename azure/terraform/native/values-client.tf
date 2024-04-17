@@ -22,7 +22,7 @@ variable "bria_model_version" {
 # SPN
 variable "bria_spn_tenant_id" {
   type        = string
-  description = "Tenant ID (provided by Bria) for multi-tenant spn authenticatio"
+  description = "Tenant ID (provided by Bria) for multi-tenant spn authentication"
   sensitive   = false
 }
 

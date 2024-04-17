@@ -27,36 +27,11 @@ resource "azurerm_key_vault_secret" "api_token" {
 
 # queue
 
-resource "azurerm_key_vault_secret" "queue_listen_connection_string" {
-  key_vault_id = module.akv.key_vault_id
-  name         = "queue-listen-connection-string"
-  value        = try(module.embeddings_queue.queues_listen_authorization_rule[var.embeddings_queue_name].primary_connection_string, "")
-
-  depends_on = [module.akv]
-}
-
 resource "azurerm_key_vault_secret" "fqdn_namespace" {
   key_vault_id = module.akv.key_vault_id
   name         = "sb-namespace-fqdn"
   value        = trimsuffix(trimprefix(module.embeddings_queue.namespace.endpoint, "https://"), ":443/")
   depends_on   = [module.akv]
-}
-
-resource "azurerm_key_vault_secret" "queue_url" {
-  key_vault_id = module.akv.key_vault_id
-  name         = "queue-url"
-  value = try(format("%s%s", module.embeddings_queue.namespace.endpoint,
-  module.embeddings_queue.queues[var.embeddings_queue_name].name), "")
-
-  depends_on = [module.akv]
-}
-
-resource "azurerm_key_vault_secret" "queue_send_connection_string" {
-  key_vault_id = module.akv.key_vault_id
-  name         = "queue-send-connection-string"
-  value        = try(module.embeddings_queue.queues_send_authorization_rule[var.embeddings_queue_name].primary_connection_string, "")
-
-  depends_on = [module.akv]
 }
 
 # ML

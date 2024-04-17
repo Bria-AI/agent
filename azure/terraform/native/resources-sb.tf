@@ -22,12 +22,6 @@ module "embeddings_queue" {
     {
       name        = var.embeddings_queue_name
       custom_name = var.embeddings_queue_name
-      authorizations = {
-        listen = true
-        send   = true
-        manage = false
-      }
-
       max_delivery_count = 3
     }
   ]
