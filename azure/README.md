@@ -65,6 +65,7 @@ After deploying using one of the methods described above, you are now ready to t
 ### Self Hosted Inference
 You now have Bria agent triggered by storage account container on '/images' folder, here is a snippet of uploading an image to the storage account container, for example:
 
+```
 from azure.storage.blob import BlobServiceClient
 import os
 
