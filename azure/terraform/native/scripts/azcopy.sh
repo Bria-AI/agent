@@ -15,7 +15,7 @@ install_azcopy() {
         elif [[ $(uname) == "Linux" ]]; then
             AZCOPY_DOWNLOAD_URL="https://aka.ms/downloadazcopy-v10-linux"
             curl -L -o azcopy.tar.gz "$AZCOPY_DOWNLOAD_URL"
-            tar -xvf azcopy --strip-components=1 --wildcards '*/azcopy'
+            tar -xvf azcopy.tar.gz --strip-components=1 --wildcards '*/azcopy'
             chmod +x azcopy
             mv azcopy /tmp/
             rm -fr azcopy.tar.gz
