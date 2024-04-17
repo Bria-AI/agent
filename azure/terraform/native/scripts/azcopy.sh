@@ -5,19 +5,24 @@ install_azcopy() {
     if ! command -v /tmp/azcopy &>/dev/null; then
         echo "azcopy is not installed. Installing..."
         if [[ $(uname) == "Darwin" ]]; then
+            brew install unzip
             AZCOPY_DOWNLOAD_URL="https://aka.ms/downloadazcopy-v10-mac"
+            curl -L -o azcopy.zip "$AZCOPY_DOWNLOAD_URL"
+            unzip azcopy.zip '*/azcopy'
+            mv azcopy_*/azcopy /tmp
+            chmod +x /tmp/azcopy
+            rm -fr azcopy.zip
         elif [[ $(uname) == "Linux" ]]; then
             AZCOPY_DOWNLOAD_URL="https://aka.ms/downloadazcopy-v10-linux"
-
+            curl -L -o azcopy.tar.gz "$AZCOPY_DOWNLOAD_URL"
+            tar -xvf azcopy --strip-components=1 --wildcards '*/azcopy'
+            chmod +x azcopy
+            mv azcopy /tmp/
+            rm -fr azcopy.tar.gz
         else
             echo "Unsupported operating system."
             exit 1
         fi
-            curl -L -o azcopy.tar.gz "$AZCOPY_DOWNLOAD_URL"
-            tar -xvf azcopy.tar.gz --strip-components=1 --wildcards '*/azcopy'
-            chmod +x azcopy
-            mv azcopy /tmp/
-            rm azcopy.tar.gz
     fi
 }
 
