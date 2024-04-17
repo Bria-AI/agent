@@ -33,7 +33,7 @@ resource "azapi_resource" "ml_model_version" {
   tags      = merge(local.extra_tags, {})
   body = jsonencode({
     properties = {
-      modelUri = format("azureml://subscriptions/%s/resourceGroups/%s/workspaces/%s/dataStores/%s/paths/%s",
+      modelUri = format("azureml://subscriptions/%s/resourceGroups/%s/workspaces/%s/datastores/%s/paths/%s",
         data.azurerm_client_config.main.subscription_id,
         module.rg.resource_group_name,
         module.ml_workspace.name,

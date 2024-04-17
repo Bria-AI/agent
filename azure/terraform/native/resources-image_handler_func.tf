@@ -32,11 +32,11 @@ module "image_handler_func" {
     azureml_workspace_name      = module.ml_workspace.name
     azureml_resource_group_name = module.rg.resource_group_name
     azureml_subscription_id     = data.azurerm_client_config.main.subscription_id
-    azureml_endpoint_name       = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.azureml_endpoint_name.id)
-    azureml_rest_endpoint_uri   = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.azureml_rest_endpoint.id)
+    azureml_endpoint_name       = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", module.akv.key_vault_name, azurerm_key_vault_secret.azureml_endpoint_name.name)
+    azureml_rest_endpoint_uri   = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", module.akv.key_vault_name, azurerm_key_vault_secret.azureml_rest_endpoint.name)
     #     Storage Variable
-    imageHandler__blobServiceUri  = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.image_storage_blob_uri.id)
-    imageHandler__queueServiceUri = format("@Microsoft.KeyVault(SecretUri=%s)", azurerm_key_vault_secret.image_storage_queue_uri.id)
+    imageHandler__blobServiceUri  = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", module.akv.key_vault_name, azurerm_key_vault_secret.image_storage_blob_uri.name)
+    imageHandler__queueServiceUri = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", module.akv.key_vault_name, azurerm_key_vault_secret.image_storage_queue_uri.name)
     blob_path = format("%s/%s",
       module.image_uploader_storage_account.storage_blob_containers[local.images_container_name].name,
       "{filename}"
