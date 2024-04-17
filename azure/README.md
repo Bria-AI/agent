@@ -57,6 +57,39 @@ bria_api_token                         = ""
 ml_vm_size                             = ""
 ```
 5. Confirm with `yes` after reviewing the Terraform plan
+6. Wait for the `Apply complete!` message (~ 20 minutes)
 
 ## Testing
-TBD
+After deploying using one of the methods described above, you are now ready to test your setup.
+
+### Self Hosted Inference
+You now have Bria agent triggered by storage account container on '/images' folder, here is a snippet of uploading an image to the storage account container, for example:
+
+from azure.storage.blob import BlobServiceClient
+import os
+
+def upload_image_to_azure_container(file_name, object_name, connection_string, container_name):
+    """
+    Uploads an image to a specified container in Azure Blob Storage.
+
+    Parameters:
+    - file_name (str): Path to the local file to upload.
+    - object_name (str): Name for the file in the storage container.
+    - connection_string (str): Azure Blob Storage connection string.
+    - container_name (str): Name of the Azure Blob Storage container.
+    """
+    # Create a BlobServiceClient using the provided connection string
+    blob_service_client = BlobServiceClient.from_connection_string(connection_string)
+
+    # Get a client to interact with the specified container
+    container_client = blob_service_client.get_container_client(container_name)
+
+    # Create a blob client for our uploading process
+    blob_client = container_client.get_blob_client('images/' + object_name)
+
+    # Upload the file to Azure Blob Storage
+    with open(file_name, "rb") as data:
+        blob_client.upload_blob(data, overwrite=True)
+    
+    print("Upload completed!")
+```
