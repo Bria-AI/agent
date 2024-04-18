@@ -3,6 +3,6 @@ variable "name" {
 }
 
 variable "max_receive_count" {
-  type = number
+  type    = number
   default = 5
 }

@@ -11,17 +11,17 @@ resource "aws_sagemaker_endpoint_configuration" "endpoint_config" {
 }
 
 resource "aws_sagemaker_model" "model" {
-  name          = var.model_name
+  name               = var.model_name
   execution_role_arn = var.execution_role
 
   primary_container {
-    image         = var.sagemaker_image
-    mode          = "MultiModel"
+    image          = var.sagemaker_image
+    mode           = "MultiModel"
     model_data_url = var.model_data_url
   }
 }
 
 resource "aws_sagemaker_endpoint" "endpoint" {
-  name = "${var.name}-attribution-agent"
+  name                 = "${var.name}-attribution-agent"
   endpoint_config_name = aws_sagemaker_endpoint_configuration.endpoint_config.name
 }

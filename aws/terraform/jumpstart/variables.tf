@@ -54,6 +54,6 @@ variable "embeddings_queue_name" {
 # Lambda
 #
 variable "execution_role_name" {
-  type        = string
-  default     = "bria-jumpstart-agent-role"
+  type    = string
+  default = "bria-jumpstart-agent-role"
 }
