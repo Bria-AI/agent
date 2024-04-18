@@ -21,7 +21,6 @@ resource "azapi_resource" "ml_model" {
       isArchived  = false
     }
   })
-  response_export_values = ["*"]
 }
 
 # Create model version
@@ -29,7 +28,7 @@ resource "azapi_resource" "ml_model" {
 resource "azapi_resource" "ml_model_version" {
   type      = "Microsoft.MachineLearningServices/workspaces/models/versions@${local.ml_rest_api_version}"
   name      = "1"
-  parent_id = jsondecode(azapi_resource.ml_model.output).id
+  parent_id = azapi_resource.ml_model.id
   tags      = merge(local.extra_tags, {})
   body = jsonencode({
     properties = {
@@ -43,11 +42,12 @@ resource "azapi_resource" "ml_model_version" {
       modelType   = "triton_model"
       description = "${local.ml_model_name}-1"
       properties  = {}
+              tags = {
+          "copyModelId" = terraform_data.copy_model.id
+        }
     }
   })
-  response_export_values = ["*"]
 
-  depends_on = [terraform_data.copy_model]
 }
 
 # Create online endpoint
@@ -74,7 +74,7 @@ resource "azapi_resource" "ml_online_endpoint_deployment" {
   type      = "Microsoft.MachineLearningServices/workspaces/onlineEndpoints/deployments@${local.ml_rest_api_version}"
   name      = local.ml_online_endpoint_deployment_name
   location  = module.azure_region.location_cli
-  parent_id = jsondecode(azapi_resource.ml_online_endpoint.output).id
+  parent_id = azapi_resource.ml_online_endpoint.id
   tags      = merge(local.extra_tags, {})
   body = jsonencode({
     properties = {
@@ -82,7 +82,7 @@ resource "azapi_resource" "ml_online_endpoint_deployment" {
       endpointComputeType       = "Managed"
       description               = local.ml_online_endpoint_deployment_name
       egressPublicNetworkAccess = "Enabled"
-      model                     = jsondecode(azapi_resource.ml_model_version.output).id
+      model                     = azapi_resource.ml_model_version.id
       instanceType              = var.ml_vm_size
       livenessProbe = {
         failureThreshold = 30
@@ -113,10 +113,10 @@ resource "azapi_resource" "ml_online_endpoint_deployment" {
       tier     = "Standard"
     }
   })
-  response_export_values = ["*"]
   lifecycle {
     replace_triggered_by = [
-      terraform_data.replace_ml_rest_api_object.output.instanceType
+      terraform_data.replace_ml_rest_api_object.output.instanceType,
+      azapi_resource.ml_model_version.id
     ]
   }
 }
@@ -135,7 +135,6 @@ resource "azapi_resource_action" "ml_online_endpoint_deployment_traffic_100" {
       }
     }
   })
-  response_export_values = ["*"]
 
   lifecycle {
     replace_triggered_by = [
