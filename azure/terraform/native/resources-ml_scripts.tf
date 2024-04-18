@@ -1,6 +1,7 @@
 # Copy blob
 resource "terraform_data" "copy_model" {
   triggers_replace = [
+    timestamp()
   ]
   input = {
     scriptName                       = "${path.module}/scripts/azcopy.sh"
