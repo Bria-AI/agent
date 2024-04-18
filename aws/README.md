@@ -1,5 +1,5 @@
 # Bria Attribution Agent
-![alt text](./assets/architecture.jpeg)
+![alt text](./assets/architecture.png)
 
 BRIA's models are trained exclusively on licensed data and provided with full copyright and privacy infringement legal coverage, subject to implementation of the Attribution Agent as provided below. The Attribution Agent installed on customer side and calculates an irreversible vector. This vector is the only data passed to BRIA. BRIA cannot reproduce any image using the vector and generated images never leave customer account. BRIA receives the information from the Attribution Agent and pays the data partners on your behalf to maintain your legal coverage.
 
