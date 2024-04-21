@@ -11,6 +11,7 @@ BRIA's models are trained exclusively on licensed data and provided with full co
 Title - New agent registration for <name>
 Subject - AWS account id, <xxx>
 ```
+2. Wait for Bria email response (API_TOKEN)
 
 ### Terraform
 
