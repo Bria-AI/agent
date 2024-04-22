@@ -6,12 +6,22 @@ BRIA's models are trained exclusively on licensed data and provided with full co
 ## Deploy
 
 ### Prerequisites
-1. Send an email to support@bria.ai
-```Plain
-Title - New agent registration for <name>
-Subject - AWS account id, <xxx>
-```
-2. Wait for Bria email response (API_TOKEN)
+1. Create a user and organization on BRIA platform
+    1. Go to https://platform.bria.ai and register to BRIA
+    2. You will be asked to provide an organization name under the registration process (after you log in the organization name will appear on the top left hand corner)
+        ![alt text](./assets/home_page.png)
+
+2.  Send an email to support@bria.ai
+    ```Plain
+    Title - New agent registration for <name you created in BRIA>
+    Subject - AWS account id
+    ```
+3. **(Important)** - After sending the above information wait for a confirmation email from BRIA before you proceed with the next deployment steps. 
+
+4. Extract your BRIA private API token:
+    1. Login to the BRIA platform https://platform.bria.ai/
+    2. Go to my account -> Auth keys -> Copy API key
+    ![alt text](./assets/home_page.png)
 
 ### Terraform
 
@@ -45,14 +55,14 @@ The bucket `mybucket` should be a bucket dedicated to storing terraform remote s
 
 1. Navigate to the folder `aws/terraform/native`
 2. Run `terraform apply`
-3. Enter the `bria-api-token` when prompted (after you get back email from us)
+3. Enter the `bria-api-token` when prompted
 4. Confirm with `yes` after reviewing the Terraform plan
 
 #### AWS Jump Start
 
 1. Navigate to the folder `aws/terraform/jumpstart`
 2. Run `terraform apply`
-3. Enter the `bria-api-token` when prompted (after you get back email from us)
+3. Enter the `bria-api-token` when prompted
 4. Confirm with `yes` after reviewing the Terraform plan
 
 ### CloudFormation
