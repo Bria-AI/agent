@@ -6,21 +6,33 @@ BRIA's models are trained exclusively on licensed data and provided with full co
 ## Deploy
 
 ### Prerequisites
-1. Send an email to support@bria.ai
-```Plain
-Title - New agent registration for <name>
-Subject - Azure tenant id, <xxx>
-```
-2. Azure CLI - if not already exist follow the [Manual](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli).
-3. Terraform - if not exist please follow the [Manual](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli).
+1. Azure CLI - if not already exist follow the [Manual](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli).
+2. Terraform - if not exist please follow the [Manual](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli).
+3. Create a user and organization on BRIA platform
+    1. Go to https://platform.bria.ai and register to BRIA
+    2. You will be asked to provide an organization name under the registration process (after you log in the organization name will appear on the top left hand corner)
+      ![alt text](./assets/home_page.png)
+
+4.  Send an email to support@bria.ai
+    ```Plain
+    Title - New agent registration for <name you created in BRIA>
+    Subject - AWS account id
+    ```
+5. **(Important)** - After sending the above information wait for a confirmation email from BRIA before you proceed with the next deployment steps. 
+
+6. Extract your BRIA private API token:
+    1. Login to the BRIA platform https://platform.bria.ai/
+    2. Go to my account -> Auth keys -> Copy API key
+    ![alt text](./assets/home_page.png)
+
 
 ### Terraform
 
 1. Using Azure CLI login to your Azure tenant and switch to the destination subscription.
-```
-az login --tenant yourtenant.com
-az account set --subscription sub_id
-```
+    ```
+    az login --tenant yourtenant.com
+    az account set --subscription sub_id
+    ```
 2. Clone the `agent` repository.
 3. Navigate to `agent` repository in the terminal.
 4. (Optional) Setup Terraform remote state:
@@ -43,19 +55,18 @@ The Storage Account `myaccount` should be a container dedicated to storing terra
 #### Self Hosted Inference
 
 1. Navigate to the folder `azure/terraform/native`
-2. Run `terraform init`
-3. Run `terraform apply`
-4. Enter the `bria-api-token` when prompted (after you get back email from us)
-(Optional): instead of manually provide the required parameters during the deploy, you can create a `parameters.auto.tfvars` file with the following data inside:
-```
-bria_spn_tenant_id                     = ""
-bria_spn_client_id                     = ""
-bria_spn_client_secret                 = ""
-bria_model_source_storage_account_name = ""
-bria_model_source_container_name       = ""
-bria_api_token                         = ""
-ml_vm_size                             = ""
-```
+2. create a `parameters.auto.tfvars` file with the following data inside (provided by BRIA):
+    ```
+    bria_spn_tenant_id                     = ""
+    bria_spn_client_id                     = ""
+    bria_spn_client_secret                 = ""
+    bria_model_source_storage_account_name = ""
+    bria_model_source_container_name       = ""
+    bria_api_token                         = ""
+    ml_vm_size                             = ""
+    ```
+3. Run `terraform init`
+4. Run `terraform apply`
 5. Confirm with `yes` after reviewing the Terraform plan
 6. Wait for the `Apply complete!` message (~ 20 minutes)
 
