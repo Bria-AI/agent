@@ -23,7 +23,7 @@ BRIA's models are trained exclusively on licensed data and provided with full co
     1. Login to the BRIA platform https://platform.bria.ai/
     2. Go to my account -> Auth keys -> Copy API key
        
-    ![alt text](./assets/api_key_page.png)
+        ![alt text](./assets/api_key_page.png)
 
 ### Terraform
 
