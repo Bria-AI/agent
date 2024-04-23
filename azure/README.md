@@ -11,7 +11,8 @@ BRIA's models are trained exclusively on licensed data and provided with full co
 3. Create a user and organization on BRIA platform
     1. Go to https://platform.bria.ai and register to BRIA
     2. You will be asked to provide an organization name under the registration process (after you log in, the organization name will appear on the top right corner)
-      ![alt text](./assets/home_page.png)
+
+        ![alt text](./assets/home_page.png)
 
 4.  Send an email to support@bria.ai
     ```Plain
@@ -23,7 +24,8 @@ BRIA's models are trained exclusively on licensed data and provided with full co
 6. Extract your BRIA private API token:
     1. Login to the BRIA platform https://platform.bria.ai/
     2. Go to my account -> Auth keys -> Copy API key
-    ![alt text](./assets/api_key_page.png)
+    
+        ![alt text](./assets/api_key_page.png)
 
 
 ### Terraform
