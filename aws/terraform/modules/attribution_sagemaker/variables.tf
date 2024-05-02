@@ -22,7 +22,7 @@ variable "sagemaker_image" {
 
 variable "sagemaker_instance_type" {
   type    = string
-  default = "ml.g4dn.xlarge"
+  default = "ml.r5.large"
 }
 
 variable "sagemaker_initial_instance_count" {

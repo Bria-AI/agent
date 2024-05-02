@@ -10,11 +10,11 @@ variable "bria_api_token" {
 variable "bria_model_version" {
   type        = string
   description = "Bria model version"
-  default     = "2.0"
+  default     = "2.2"
 
   validation {
-    condition     = contains(["1.4", "2.0"], var.bria_model_version)
-    error_message = "The model_version must be either '1.4' or '2.0'."
+    condition     = contains(["2.0", "2.2", "2.3"], var.bria_model_version)
+    error_message = "The model_version must be either '2.0' or '2.2' or '2.3'."
   }
 }
 
