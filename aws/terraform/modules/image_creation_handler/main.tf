@@ -4,7 +4,7 @@ resource "aws_lambda_function" "image_creation_handler" {
   role = var.execution_role
 
   package_type = "Image"
-  timeout      = 30
+  timeout      = 60
 
   image_uri = var.image_uri
 
