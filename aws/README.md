@@ -6,7 +6,7 @@ BRIA's models are trained exclusively on licensed data and provided with full co
 ## Deploy
 
 ### Prerequisites
-1. Create a user and organization on BRIA platform
+1. Create a user and organization on BRIA platform (If you already have an organization created in BRIA platform please skip this step and proceed to step 2)
     1. Go to https://platform.bria.ai and register to BRIA
     2. You will be asked to provide an organization name under the registration process (after you log in the organization name will appear on the top right corner)
        
@@ -14,7 +14,7 @@ BRIA's models are trained exclusively on licensed data and provided with full co
 
 2.  Send an email to support@bria.ai
     ```Plain
-    Title - New agent registration for <name you created in BRIA>
+    Title - New agent registration for <organization name you created in BRIA>
     Subject - AWS account id
     ```
 3. **(Important)** - After sending the above information wait for a confirmation email from BRIA before you proceed with the next deployment steps. 
