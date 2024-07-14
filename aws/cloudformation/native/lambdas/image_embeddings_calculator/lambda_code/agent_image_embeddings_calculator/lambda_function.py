@@ -6,6 +6,7 @@ from PIL import Image
 import sentry_sdk
 from sentry_sdk.integrations.aws_lambda import AwsLambdaIntegration
 import json
+from PIL.PngImagePlugin import PngInfo
 
 sentry_sdk.init(
     dsn="https://8a85874d4f547148fd2f7b7f9caf2f93@o417868.ingest.sentry.io/4505900165627904",
@@ -22,11 +23,16 @@ def lambda_handler(event, context):
         # Get the bucket name and file key from the event
         bucket = event["Records"][0]["s3"]["bucket"]["name"]
         key = event["Records"][0]["s3"]["object"]["key"]
-
         # Get image from S3
         response = s3.get_object(Bucket=bucket, Key=key)
         image_bytes = response["Body"].read()
         pil_img = Image.open(io.BytesIO(image_bytes))
+        
+        metadata = pil_img.info
+    
+        # Extract the api_token if it exists
+        api_token = metadata.get("api_token", os.environ.get("api_token"))
+        model_version = metadata.get("model_version", os.environ.get("model_version"))
 
         # Get inference result and save as .npy
         clip_pipeline = CLIPEmbedder()
@@ -36,7 +42,13 @@ def lambda_handler(event, context):
         # get image uid
         # pattern = "\/(.*?)\."
         # image_uid = re.search(pattern, key).group(1)
-        sqs.send_message(QueueUrl=queue_url, MessageBody=json.dumps(img_embeddings))
+        message_body = {
+        'api_token': api_token,
+        'model_version': model_version,
+        'img_embeddings': img_embeddings
+        }
+        
+        sqs.send_message(QueueUrl=queue_url, MessageBody=json.dumps(message_body))
         print('embeddings have sent to queue')
         # Upload .json to the S3 bucket under 'embeddings/' folder
         # s3.put_object(
