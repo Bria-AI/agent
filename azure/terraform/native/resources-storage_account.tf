@@ -89,9 +89,4 @@ moved {
   to   = module.image_uploader_storage_account[0]
 }
 
-resource "azurerm_storage_container" "custom_image_container" {
-  count                 = !local.use_custom_storage_account || local.image_container_exist ? 0 : 1
-  name                  = var.images_container_name
-  storage_account_name  = data.azurerm_storage_account.custom_storage_account.0.name
-  container_access_type = "private"
-}
+
