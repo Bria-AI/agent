@@ -60,9 +60,9 @@ resource "azurerm_key_vault_secret" "image_storage_blob_uri" {
   name         = "image-handler-blob-uri"
   value = try(
     module.image_uploader_storage_account[0].storage_account_properties.primary_blob_endpoint,
-    data.azurerm_storage_account.storage_account[0].primary_blob_endpoint
+    data.azurerm_storage_account.custom_storage_account[0].primary_blob_endpoint
   )
-  depends_on   = [module.akv]
+  depends_on = [module.akv]
 }
 
 resource "azurerm_key_vault_secret" "image_storage_queue_uri" {
@@ -70,7 +70,7 @@ resource "azurerm_key_vault_secret" "image_storage_queue_uri" {
   name         = "image-handler-queue-uri"
   value = try(
     module.image_uploader_storage_account[0].storage_account_properties.primary_blob_endpoint,
-    data.azurerm_storage_account.storage_account[0].primary_blob_endpoint
+    data.azurerm_storage_account.custom_storage_account[0].primary_blob_endpoint
   )
-  depends_on   = [module.akv]
+  depends_on = [module.akv]
 }
