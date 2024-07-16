@@ -12,26 +12,6 @@ module "ml_workspace" {
 
   logs_destinations_ids = [module.logs.log_analytics_workspace_id]
 
-  compute_cluster_map = {
-    main = {
-      name        = local.ml_compute_cluster_name
-      custom_name = local.ml_compute_cluster_name
-      vm_priority = "LowPriority"
-      vm_size     = var.ml_vm_size
-      location    = var.ml_vm_location
-
-      scale_settings = {
-        min_node_count                       = 0
-        max_node_count                       = 1
-        scale_down_nodes_after_idle_duration = "PT30S"
-      }
-
-      identity = {
-        type = "SystemAssigned"
-      }
-    }
-  }
-
   datastore_blob_storage_map = {
     model = {
       name                       = local.model_datastore_name

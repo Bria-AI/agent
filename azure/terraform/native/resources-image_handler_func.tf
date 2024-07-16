@@ -37,17 +37,10 @@ module "image_handler_func" {
     #     Storage Variable
     imageHandler__blobServiceUri  = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", module.akv.key_vault_name, azurerm_key_vault_secret.image_storage_blob_uri.name)
     imageHandler__queueServiceUri = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", module.akv.key_vault_name, azurerm_key_vault_secret.image_storage_queue_uri.name)
-    blob_path = format("%s/%s",
-    try(
-      module.image_uploader_storage_account[0].storage_blob_containers[var.images_container_name].name,
-      azurerm_storage_container.custom_image_container[0].name,
-      var.images_container_name
-    ),
-    "{filename}"
-  )
+    blob_path                     = format("%s/%s", var.images_container_name, "{filename}")
 
     #     Service bus variable
-    imageHandler__fullyQualifiedNamespace = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", module.akv.key_vault_name, azurerm_key_vault_secret.fqdn_namespace.id)
+    imageHandler__fullyQualifiedNamespace = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", module.akv.key_vault_name, azurerm_key_vault_secret.fqdn_namespace.name)
     queue_name                            = module.embeddings_queue.queues[var.embeddings_queue_name].name
   }
 
