@@ -39,8 +39,10 @@ module "image_handler_func" {
     imageHandler__queueServiceUri = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", module.akv.key_vault_name, azurerm_key_vault_secret.image_storage_queue_uri.name)
     blob_path = format("%s/%s",
     try(
-      module.image_uploader_storage_account[0].storage_blob_containers[local.images_container_name].name,
-      data.azurerm_storage_containers.container.containers[0].name
+      module.image_uploader_storage_account[0].storage_blob_containers[var.images_container_name].name,
+      local.matched_container_name,
+      # data.azurerm_storage_containers.container[0].containers[0].name,
+      var.images_container_name
     ),
     "{filename}"
   )
