@@ -18,7 +18,7 @@ variable "bria_model_version" {
   }
 }
 
-variable "storage_account_resource_group_name" {
+variable "image_storage_account_resource_group_name" {
   type        = string
   default     = null
   description = "existing resource group were the custom storage account existed name to use"
