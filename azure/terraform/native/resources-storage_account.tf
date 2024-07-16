@@ -55,6 +55,7 @@ module "ml_backend_storage_account" {
 }
 
 module "image_uploader_storage_account" {
+  count          = local.image_uploader_storage_account_count
   source         = "claranet/storage-account/azurerm"
   version        = "7.9.0"
   client_name    = lower(random_string.identifier.result)
@@ -75,14 +76,15 @@ module "image_uploader_storage_account" {
   ]
   default_firewall_action = "Allow"
 
-  containers = [
-    {
-      name = local.images_container_name
-    }
-  ]
+  containers = local.image_containers
 
   extra_tags = merge(local.extra_tags, {
   })
 
   logs_destinations_ids = [module.logs.log_analytics_workspace_id]
+}
+
+moved {
+  from = module.image_uploader_storage_account
+  to   = module.image_uploader_storage_account[0]
 }

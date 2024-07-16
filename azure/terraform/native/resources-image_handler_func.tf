@@ -38,9 +38,12 @@ module "image_handler_func" {
     imageHandler__blobServiceUri  = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", module.akv.key_vault_name, azurerm_key_vault_secret.image_storage_blob_uri.name)
     imageHandler__queueServiceUri = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", module.akv.key_vault_name, azurerm_key_vault_secret.image_storage_queue_uri.name)
     blob_path = format("%s/%s",
-      module.image_uploader_storage_account.storage_blob_containers[local.images_container_name].name,
-      "{filename}"
-    )
+    try(
+      module.image_uploader_storage_account[0].storage_blob_containers[local.images_container_name].name,
+      data.azurerm_storage_containers.container.containers[0].name
+    ),
+    "{filename}"
+  )
 
     #     Service bus variable
     imageHandler__fullyQualifiedNamespace = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.fqdn_namespace.id})"
@@ -65,13 +68,13 @@ module "image_handler_func" {
 # Storage permissions
 resource "azurerm_role_assignment" "image_handler_func_blob_data_contributor_on_image_uploader_storage" {
   principal_id         = module.image_handler_func.function_app_identity.principal_id
-  scope                = module.image_uploader_storage_account.storage_account_id
+  scope                = try(module.image_uploader_storage_account[0].storage_account_id, data.azurerm_storage_account.storage_account[0].id)
   role_definition_name = "Storage Blob Data Contributor"
 }
 
 resource "azurerm_role_assignment" "image_handler_func_queue_data_contributor_on_image_uploader_storage" {
   principal_id         = module.image_handler_func.function_app_identity.principal_id
-  scope                = module.image_uploader_storage_account.storage_account_id
+  scope                = try(module.image_uploader_storage_account[0].storage_account_id, data.azurerm_storage_account.storage_account[0].id)
   role_definition_name = "Storage Queue Data Contributor"
 }
 

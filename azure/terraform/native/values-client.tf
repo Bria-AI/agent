@@ -18,6 +18,19 @@ variable "bria_model_version" {
   }
 }
 
+variable "images_storage_account_name" {
+  type     = string
+  default  = null
+  description = "the name of the storage account which hosts the images container"
+}
+
+variable image_storage_account_container_name {
+  type        = string
+  default     = null
+  description = "the name of the container in the storage account that hosts the images"
+}
+
+
 
 # SPN
 variable "bria_spn_tenant_id" {
