@@ -40,7 +40,7 @@ module "image_handler_func" {
     blob_path = format("%s/%s",
     try(
       module.image_uploader_storage_account[0].storage_blob_containers[var.images_container_name].name,
-      azurerm_storage_container[0].custom_image_container.name
+      azurerm_storage_container.custom_image_container[0].name,
       var.images_container_name
     ),
     "{filename}"
