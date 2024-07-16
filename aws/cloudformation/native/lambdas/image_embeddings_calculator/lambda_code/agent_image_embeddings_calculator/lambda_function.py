@@ -28,32 +28,27 @@ def lambda_handler(event, context):
         image_bytes = response["Body"].read()
         pil_img = Image.open(io.BytesIO(image_bytes))
         
-        metadata = pil_img.info
+        metadata = response["Metadata"]
     
         # Extract the api_token if it exists
         api_token = metadata.get("api_token", os.environ.get("api_token"))
         model_version = metadata.get("model_version", os.environ.get("model_version"))
-
-        # Get inference result and save as .npy
+        
         clip_pipeline = CLIPEmbedder()
-        # return list with clip embedding on first value
         img_embeddings = [clip_pipeline.run_on_image(pil_img)]
         
-        # get image uid
-        # pattern = "\/(.*?)\."
-        # image_uid = re.search(pattern, key).group(1)
-        message_body = {
-        'api_token': api_token,
-        'model_version': model_version,
-        'img_embeddings': img_embeddings
-        }
+        if api_token and model_version:
+          message_body = {
+          'api_token': api_token,
+          'model_version': model_version,
+          'img_embeddings': img_embeddings
+          }
+        else:
+          message_body = {'img_embeddings': img_embeddings}
         
+        print(message_body)
         sqs.send_message(QueueUrl=queue_url, MessageBody=json.dumps(message_body))
         print('embeddings have sent to queue')
-        # Upload .json to the S3 bucket under 'embeddings/' folder
-        # s3.put_object(
-        #     Body=json.dumps(img_embeddings), Bucket=bucket, Key=f"embeddings/{image_uid}.json"
-        # )
     except Exception as ex:
         sentry_sdk.capture_message(ex)
         raise
@@ -88,7 +83,7 @@ if __name__ == "__main__":
           "arn": "arn:aws:s3:::aws-bria-agent-results"
         },
         "object": {
-          "key": "images/2359a6a4-cd96-4599-b18f-b1fd14e715e0.PNG",
+          "key": "images/f926ea6c-41f6-11ef-8c67-0242ac120002.png",
           "size": 1024,
           "eTag": "0123456789abcdef0123456789abcdef",
           "sequencer": "0A1B2C3D4E5F678901"
