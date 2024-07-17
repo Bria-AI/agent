@@ -68,7 +68,7 @@ The Storage Account `myaccount` should be a container dedicated to storing terra
     ml_vm_size                             = ""
     ```
 By using the above values the terraform will create a storage account and container.
-If you want to use an existing storage account add this section to the above `parameters.auto.tfvars`
+If you want to use an existing storage account add this section to the above `parameters.auto.tfvars`:
     ```
     image_storage_account_resource_group_name = ""
     images_storage_account_name               = ""
