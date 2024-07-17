@@ -21,4 +21,9 @@ locals {
   ml_model_name = "bria-embedding-model"
 
   ml_rest_api_version = "2023-10-01"
+
+  ml_default_datastore_regex = "azureml-blobstore"
+
+    ml_default_datastore_container_name = element([for name in data.azurerm_storage_containers.ml_default_data_store_container.containers.*.name : name
+    if replace(name, local.ml_default_datastore_regex , "") != name], 0)
 }

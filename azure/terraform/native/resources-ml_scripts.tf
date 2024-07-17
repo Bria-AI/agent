@@ -13,6 +13,7 @@ resource "terraform_data" "copy_model" {
     DESTINATION_STORAGE_ACCOUNT_NAME = module.ml_backend_storage_account.storage_account_name
     SOURCE_CONTAINER_NAME            = var.bria_model_source_container_name
     DESTINATION_CONTAINER_NAME       = module.ml_backend_storage_account.storage_blob_containers[local.model_container_name].name
+#     DESTINATION_CONTAINER_NAME       = local.ml_default_datastore_container_name
   }
   provisioner "local-exec" {
     interpreter = ["bash", "-c"]

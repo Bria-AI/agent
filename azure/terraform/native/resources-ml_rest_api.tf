@@ -47,7 +47,6 @@ resource "azapi_resource" "ml_model_version" {
   })
   response_export_values = ["*"]
 
-  depends_on = [terraform_data.copy_model]
 }
 
 # Create online endpoint
