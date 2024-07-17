@@ -43,9 +43,14 @@ resource "azapi_resource" "ml_model_version" {
       modelType   = "triton_model"
       description = "${local.ml_model_name}-1"
       properties  = {}
+              tags = {
+          sourceStorageContainer = terraform_data.copy_model.output.DESTINATION_CONTAINER_NAME
+        }
     }
   })
   response_export_values = ["*"]
+
+  depends_on = [terraform_data.copy_model]
 
 }
 
