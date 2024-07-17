@@ -67,6 +67,13 @@ The Storage Account `myaccount` should be a container dedicated to storing terra
     bria_api_token                         = ""
     ml_vm_size                             = ""
     ```
+By using the above values the terraform will create a storage account and container.
+If you want to use an existing storage account add this section to the above `parameters.auto.tfvars`
+    ```
+    image_storage_account_resource_group_name = ""
+    images_storage_account_name               = ""
+    images_container_name                     = ""
+    ```
 3. Run `terraform init`
 4. Run `terraform apply`
 5. Confirm with `yes` after reviewing the Terraform plan
