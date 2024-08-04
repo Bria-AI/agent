@@ -56,12 +56,11 @@ copy_blobs() {
     local SRC_CONTAINER_NAME=$8
     local DESTINATION_CONTAINER_NAME=$9
 
-    export AZCOPY_SPA_CLIENT_SECRET="$SPN_PASSWORD"
+    export AZCOPY_AUTO_LOGIN_TYPE=SPN
+    export AZCOPY_SPA_APPLICATION_ID=$SPN_CLIENT_ID
+    export AZCOPY_SPA_CLIENT_SECRET=$SPN_PASSWORD
+    export AZCOPY_TENANT_ID=$TENANT_ID
 
-    # Login to the Azure account using service principal
-    if ! /tmp/azcopy login --service-principal --application-id "$SPN_CLIENT_ID" --tenant-id "$TENANT_ID"; then
-        handle_error "Azure login failed. Please check your credentials."
-    fi
 
     # Set the source and destination endpoints
     SOURCE_ENDPOINT="https://${SOURCE_STORAGE_ACCOUNT_NAME}.blob.core.windows.net/${SRC_CONTAINER_NAME}"
@@ -75,8 +74,11 @@ copy_blobs() {
     fi
 
     # Logout from Azure account
-    /tmp/azcopy logout
     unset AZCOPY_SPA_CLIENT_SECRET
+    unset AZCOPY_AUTO_LOGIN_TYPE
+    unset AZCOPY_SPA_APPLICATION_ID
+    unset AZCOPY_SPA_CLIENT_SECRET
+    unset AZCOPY_TENANT_ID
 }
 
 # Parse command line options

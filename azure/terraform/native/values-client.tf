@@ -18,6 +18,26 @@ variable "bria_model_version" {
   }
 }
 
+variable "image_storage_account_resource_group_name" {
+  type        = string
+  default     = null
+  description = "existing resource group were the custom storage account existed name to use"
+}
+
+
+variable "images_storage_account_name" {
+  type        = string
+  default     = null
+  description = "the name of the storage account which hosts the images container"
+}
+
+variable "images_container_name" {
+  type        = string
+  default     = "images"
+  description = "the container name that will be in the storage account"
+}
+
+
 
 # SPN
 variable "bria_spn_tenant_id" {
