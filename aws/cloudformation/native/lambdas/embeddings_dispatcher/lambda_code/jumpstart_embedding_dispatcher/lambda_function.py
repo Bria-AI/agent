@@ -35,10 +35,10 @@ def handler(event, context):
             embeddings_uid = str(uuid.uuid4())
 
             request_body = {
-                "embeddings_base64": file_json_data,
+                "embeddings_base64": file_json_data.get('img_embeddings'),
                 "embeddings_uid": embeddings_uid,
-                "model_version": model_version,
-                "api_token": api_token,
+                "model_version": file_json_data.get('model_version', model_version),
+                "api_token": file_json_data.get('api_token', api_token),
             }
 
             # Make a POST request to the API Gateway
