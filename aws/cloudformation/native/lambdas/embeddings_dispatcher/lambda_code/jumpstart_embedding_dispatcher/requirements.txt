@@ -1,4 +1,0 @@
-requests
-boto3
-sentry_sdk
-requests_aws4auth

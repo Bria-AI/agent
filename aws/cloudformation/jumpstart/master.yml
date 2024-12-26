@@ -21,13 +21,13 @@ Parameters:
 
   ApiToken:
     Type: String
-    Default: 028ff61ba99b421497880f330d625e57
+    Default: <N/A>
     Description: Company API token to Bria
 
   ModelVersion:
     Type: String
-    Default: "1.4"
-    AllowedValues: ["1.4", "2.0"]
+    Default: "2.3"
+    AllowedValues: ["1.4", "2.0", "2.3", "3.0"]
     Description: Bria model version
 
   MainRole:

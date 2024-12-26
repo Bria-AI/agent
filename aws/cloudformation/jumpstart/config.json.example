@@ -9,11 +9,11 @@
     },
     {
         "ParameterKey": "ApiToken",
-        "ParameterValue": "a10d6386dd6a11ebba800242ac130004"
+        "ParameterValue": "<APIToken>"
     },
     {
         "ParameterKey": "ModelVersion",
-        "ParameterValue": "1.4"
+        "ParameterValue": "2.3"
     }
     
 ]
