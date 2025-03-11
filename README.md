@@ -13,7 +13,7 @@ Yes,  BRIA  offers  diffuse  models  suitable  for  commercial  use,  that  are 
 Attribution Agent enables BRIA to comply with its payment obligation to its data partner, such that your use of 
 the models will be fully legally covered. 
 
-### Do I need to pay to date partners to retain the legal coverage?
+### Do I need to pay to data partners to retain the legal coverage?
 No, BRIA receives the information from the Attribution Agent and pays the attribution payments to its data 
 partners on our behalf, such that you retain full legal coverage. 
 
